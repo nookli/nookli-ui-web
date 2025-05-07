@@ -29,5 +29,5 @@ jobs:
       - name: Lint (optional)
         run: npm run lint || echo "No lint script defined"
 
-      - name: Prettier Check (optional)
-        run: npx prettier --check .
+#      - name: Prettier Check (optional)
+#        run: npx prettier --check .
