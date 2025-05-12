@@ -1,0 +1,119 @@
+name: Nookli UI Web - CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      # If 'web/' folder doesn't exist, adjust paths to match your project structure.
+      # For example, if your source code (src, public, package.json, Dockerfile, etc.)
+      # is at the root of this nookli-ui-web repository:
+      - 'src/**'
+      - 'public/**'
+      - '*.json' # Catches package.json, package-lock.json, etc.
+      - '*.js'   # Catches vite.config.js, etc.
+      - '*.ts'   # Catches vite.config.ts, etc.
+      - '*.html' # Catches index.html
+      - 'Dockerfile'
+      - '.github/workflows/nookli-ui-web.yml'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      # Adjust paths similarly here if 'web/' folder doesn't exist
+      - 'src/**'
+      - 'public/**'
+      - '*.json'
+      - '*.js'
+      - '*.ts'
+      - '*.html'
+      - 'Dockerfile'
+      - '.github/workflows/nookli-ui-web.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-push:
+    name: 🧪 Test → 🧱 Build → 🐳 Dockerize → 📦 Push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        # If 'web/' folder doesn't exist, commands run from the repository root by default.
+        run: npm ci
+
+      - name: Build Vite App
+        # If 'web/' folder doesn't exist, commands run from the repository root by default.
+        run: npm run build
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Set up gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Set Variables
+        id: vars
+        run: |
+          echo "project_id=${{ secrets.GCP_PROJECT_ID }}" >> $GITHUB_OUTPUT
+          echo "region=us-central1" >> $GITHUB_OUTPUT
+
+      - name: Docker Auth for Artifact Registry
+        run: gcloud auth configure-docker ${{ steps.vars.outputs.region }}-docker.pkg.dev
+
+      - name: Build & Push Docker Image
+        run: |
+          IMAGE="${{ steps.vars.outputs.region }}-docker.pkg.dev/${{ steps.vars.outputs.project_id }}/nookli-ui-web/web:${{ github.sha }}"
+          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+          # If 'web/' folder doesn't exist and Dockerfile is at root, adjust path and context:
+          docker build -t "$IMAGE" -f Dockerfile .
+          docker push "$IMAGE"
+
+  deploy:
+    name: 🚀 Deploy to Cloud Run
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Set up gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Set Variables
+        id: vars
+        run: |
+          echo "project_id=${{ secrets.GCP_PROJECT_ID }}" >> $GITHUB_OUTPUT
+          echo "region=us-central1" >> $GITHUB_OUTPUT
+
+      - name: Deploy to Cloud Run
+        run: |
+          IMAGE="${{ steps.vars.outputs.region }}-docker.pkg.dev/${{ steps.vars.outputs.project_id }}/nookli-ui-web/web:${{ github.sha }}"
+          gcloud run deploy nookli-ui-web \
+            --image=$IMAGE \
+            --region=${{ steps.vars.outputs.region }} \
+            --platform=managed \
+            --project=${{ steps.vars.outputs.project_id }} \
+            --quiet
