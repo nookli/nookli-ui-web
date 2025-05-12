@@ -1,29 +1,42 @@
-import './App.css';
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
+import ProtectedRoute from './routes/ProtectedRoute';
+import DashboardLayout from './layouts/DashboardLayout';
 
-function App() {
+// Dashboard sub-pages
+import DashboardHome from './pages/dashboard/Home';
+// import New from './pages/dashboard/New';
+import Workspaces from './pages/dashboard/Workspaces.jsx';
+import Stacks from './pages/dashboard/Stacks';
+// import Flows from './pages/dashboard/Flows';
+// import Search from './pages/dashboard/Search';
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src="Octocat.png" className="App-logo" alt="logo" />
-        <p>
-          GitHub Codespaces <span className="heart">♥️</span> React
-        </p>
-        <p className="small">
-          Edit <code>src/App.jsx</code> and save to reload.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </p>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+
+      {/* Dashboard routes (protected) */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="home" element={<DashboardHome />} />
+        <Route path="workspaces" element={<Workspaces />} />
+        <Route path="stacks" element={<Stacks />} />
+        {/* <Route path="new" element={<New />} />
+        <Route path="flows" element={<Flows />} />
+        <Route path="search" element={<Search />} /> */}
+      </Route>
+
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
-}
+};
 
 export default App;

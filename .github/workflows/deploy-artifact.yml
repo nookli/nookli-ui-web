@@ -1,3 +1,55 @@
+# name: Build and Deploy to GCP Artifact Registry
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# env:
+#   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+#   REGION: ${{ secrets.GCP_REGION }} # Example: us-central1
+#   REPO_NAME: kos-frontend
+#   IMAGE_NAME: kos-dashboard
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: 📥 Checkout source
+#         uses: actions/checkout@v3
+
+#       - name: 🟢 Setup Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 20
+
+#       - name: 📦 Install dependencies
+#         run: npm ci
+
+#       - name: 🛠️ Build Vite App
+#         run: npm run build
+
+#       - name: 🔐 Authenticate with Google Cloud
+#         uses: google-github-actions/auth@v2
+#         with:
+#           credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+#       - name: ☁️ Setup gcloud CLI
+#         uses: google-github-actions/setup-gcloud@v2
+
+#       - name: 🔧 Configure Docker for Artifact Registry
+#         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+
+#       - name: 🐳 Build Docker image
+#         run: |
+#           docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:latest .
+
+#       - name: 🚀 Push Docker image to GCP Artifact Registry
+#         run: |
+#           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:latest
+
+
 name: Build and Deploy to GCS
 
 on:
