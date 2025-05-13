@@ -14,7 +14,7 @@ on:
       - '*.ts'   # Catches vite.config.ts, etc.
       - '*.html' # Catches index.html
       - 'Dockerfile'
-      - '.github/workflows/nookli-ui-web.yml'
+      - '.github/workflows/pipeline.yml' # Corrected to match the actual workflow filename
   pull_request:
     branches: [ "main" ]
     paths:
@@ -26,7 +26,7 @@ on:
       - '*.ts'
       - '*.html'
       - 'Dockerfile'
-      - '.github/workflows/nookli-ui-web.yml'
+      - '.github/workflows/pipeline.yml' # Corrected to match the actual workflow filename
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -34,7 +34,7 @@ concurrency:
 
 jobs:
   build-and-push:
-    name: 🧪 Test → 🧱 Build → 🐳 Dockerize → 📦 Push
+    name: Test → Build → Dockerize → Push
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
@@ -73,6 +73,9 @@ jobs:
 
       - name: Docker Auth for Artifact Registry
         run: gcloud auth configure-docker ${{ steps.vars.outputs.region }}-docker.pkg.dev
+
+      - name: List files before Docker build # Debugging step
+        run: ls -la
 
       - name: Build & Push Docker Image
         run: |
