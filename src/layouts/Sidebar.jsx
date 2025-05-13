@@ -11,7 +11,10 @@ import {
 } from '@mui/icons-material';
 import { Avatar, Popover, Box, Typography } from '@mui/material';
 import { FaBox, FaCube, FaProjectDiagram, FaLayerGroup, FaHome } from 'react-icons/fa';
+import { BsDiagram3 } from "react-icons/bs";
 import SettingsPopup from './SettingsPopup';
+import NewPopover from './NewPopover';
+import SwitchAccountPopover from './SwitchAccountPopover';
 
 const navItems = [
   { to: '/dashboard/home', label: 'Home', icon: <Home fontSize="small" /> },
@@ -35,31 +38,45 @@ const Sidebar = () => {
 
   const newOpen = Boolean(newAnchorEl);
 
+  // State for switch account popover
+  const [switchAnchorEl, setSwitchAnchorEl] = useState(null);
+
+  const handleSwitchOpen = (event) => {
+    setSwitchAnchorEl(event.currentTarget);
+  };
+
+  const handleSwitchClose = () => {
+    setSwitchAnchorEl(null);
+  };
+
+  const switchOpen = Boolean(switchAnchorEl);
+
+
   const creationItems = [
     {
       title: 'Block',
       description: 'Create a single learning element',
-      icon: <FaBox  />
+      icon: <FaBox />
     },
     {
       title: 'Unit',
       description: 'Group blocks into a focused lesson',
-      icon: <FaCube  />
+      icon: <FaCube />
     },
     {
       title: 'Flow',
-      description: 'Wrap knowledge into shareable, controllable summaries',
-      icon: <FaProjectDiagram  />
+      description: 'Wrap knowledge into summaries',
+      icon: <BsDiagram3 />
     },
     {
       title: 'Stack',
       description: 'Full course built from paths and units',
-      icon: <FaLayerGroup  />
+      icon: <FaLayerGroup />
     },
     {
       title: 'Workspace',
       description: 'Where everything lives and connects',
-      icon: <FaHome  />
+      icon: <FaHome />
     },
   ];
 
@@ -99,98 +116,32 @@ const Sidebar = () => {
             <Settings sx={{ fontSize: 20 }} />
           </button>
           <Avatar
+            onClick={handleSwitchOpen}
             alt="User Avatar"
-            src="https://i.pravatar.cc/40"
+            src="https://i.pravatar.cc/49"
             sx={{ width: 32, height: 32 }}
           />
         </div>
       </aside>
 
-      {/* New Item Popover */}
-      <Popover
-        open={newOpen}
-        anchorEl={newAnchorEl}
-        onClose={handleNewClose}
-        anchorOrigin={{
-          vertical: 'center',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        sx={{
-          '& .MuiPaper-root': {
-            borderRadius: '12px',
-            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-            width: '300px',
-            padding: '6px',
-            marginLeft: '8px',
-            border: '1px solid #E5E7EB'
-          }
-        }}
-      >
-        <Box sx={{ p: 1 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {creationItems.map((item, index) => (
-              <Box
-                key={index}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  p: '4px 4px',
-                  borderRadius: '8px',
-                  '&:hover': {
-                    backgroundColor: '#f5f5f5',
-                    cursor: 'pointer'
-                  }
-                }}
-              >
-                <Box
-                  sx={{
-                    mr: 2,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '36px',
-                    height: '36px',
-                    backgroundColor: '#F53E47',
-                    borderRadius: '50%'
-                  }}
-                >
-                  {React.cloneElement(item.icon, {
-                    className: "text-white",
-                    style: { width: '20px', height: '20px' },
-                  })}
-                </Box>
-                <Box>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      fontWeight: 500,
-                      fontSize: '14px',
-                      lineHeight: '20px',
-                      color: '#111827'
-                    }}
-                  >
-                    {item.title}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: '#6B7280',
-                      fontSize: '12px',
-                      lineHeight: '16px'
-                    }}
-                  >
-                    {item.description}
-                  </Typography>
-                </Box>
-              </Box>
-            ))}
-          </Box>
-        </Box>
-      </Popover>
+      <NewPopover open={newOpen} anchorEl={newAnchorEl} onClose={handleNewClose} />
+      <SwitchAccountPopover
+        open={switchOpen}
+        anchorEl={switchAnchorEl}
+        onClose={handleSwitchClose}
+        accounts={[
+          {
+            avatar: 'https://i.pravatar.cc/42',
+            label: 'Personal',
+            email: 'neo@nookli.ai',
+          },
+          {
+            avatar: 'https://i.pravatar.cc/31',
+            label: 'Company',
+            email: 'neo@nookli.io',
+          },
+        ]}
+      />
 
       {/* Settings Modal */}
       {showSettingsPopup && <SettingsPopup onClose={() => setShowSettingsPopup(false)} />}

@@ -2,45 +2,89 @@ import React, { useState } from 'react';
 import { FaBell, FaRedo, FaSearch, FaHistory, FaChevronDown } from 'react-icons/fa';
 import Popover from '@mui/material/Popover';
 import AIChatPanel from './AIChatPanel';
+import SearchPopup from './SearchPopup';
+import Dialog from '@mui/material/Dialog';
+import { IoClose } from 'react-icons/io5';
+import HistoryPopover from './HistoryPopover';
+import NotificationsPopover from './NotificationsPopover';
 
 const Topbar = () => {
   // State for all popovers
-  const [searchAnchorEl, setSearchAnchorEl] = useState(null);
   const [historyAnchorEl, setHistoryAnchorEl] = useState(null);
-  const [askAtomAnchorEl, setAskAtomAnchorEl] = useState(null);
+  const [bellAnchorEl, setBellAnchorEl] = useState(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [searchPopup, setsearchPopup] = useState(false);
 
-    const [isChatOpen, setIsChatOpen] = useState(false);
+  const handleSearchOpen = () => {
+    setsearchPopup(true);
+  };
 
-
-  const handleSearchClick = (event) => {
-    setSearchAnchorEl(event.currentTarget);
+  const handleSearchClose = () => {
+    setsearchPopup(false);
   };
 
   const handleHistoryClick = (event) => {
     setHistoryAnchorEl(event.currentTarget);
   };
 
-  const handleAskAtomClick = (event) => {
-    setAskAtomAnchorEl(event.currentTarget);
-  };
-
   const handleClose = () => {
-    setSearchAnchorEl(null);
     setHistoryAnchorEl(null);
-    setAskAtomAnchorEl(null);
+    setBellAnchorEl(null);
   };
 
-  const searchOpen = Boolean(searchAnchorEl);
   const historyOpen = Boolean(historyAnchorEl);
-  const askAtomOpen = Boolean(askAtomAnchorEl);
+
+  const handleBellClick = (event) => {
+    setBellAnchorEl(event.currentTarget);
+  };
+
+  const BellOpen = Boolean(bellAnchorEl);
 
   return (
     <div className="flex items-center justify-between bg-[#2c3e50] text-white px-6 py-3">
       <div className="flex-1"></div>
 
       <div className="flex items-center gap-4">
-        {/* Search Box with icon */}
-        <div className="relative flex items-center">
+        <div onClick={handleSearchOpen}
+          className="w-[450px] max-w-full pl-10 pr-4 py-2 rounded bg-white text-gray-700 cursor-pointer relative flex items-center
+        hover:shadow focus-within:shadow transition-all duration-200 md:w-[350px] lg:w-[450px]"
+        >
+          <FaSearch className="absolute left-3 text-gray-400" />
+          <span className="text-sm">Find files, docs, or workspaces</span>
+          {/* SearchPopup */}
+          <Dialog
+            open={searchPopup}
+            onClose={handleSearchClose}
+            className="relative z-50"
+            sx={{
+              '& .MuiDialog-container': {
+                alignItems: 'flex-center',
+                justifyContent: 'flex-center',
+              },
+            }}
+            fullWidth
+            maxWidth="md"
+            PaperProps={{
+              sx: {
+                minHeight: 450,
+                display: 'flex',
+                flexDirection: 'column',
+                borderRadius: 2,
+                px: 3,
+                py: 2,
+              }
+            }}
+          >
+            {/* Close Button */}
+            <button onClick={handleSearchClose} className="absolute top-2 right-3 text-gray-600 hover:text-black">
+              <IoClose size={20} />
+            </button>
+            <SearchPopup />
+          </Dialog>
+
+        </div>
+
+        {/* <div className="relative flex items-center">
           <FaSearch className="absolute left-3 text-gray-400" />
           <input
             type="text"
@@ -49,7 +93,7 @@ const Topbar = () => {
             className="w-[450px] max-w-full pl-10 pr-4 py-2 rounded bg-white text-black focus:outline-none transition-all duration-200
                      focus:w-[500px] md:w-[350px] lg:w-[450px]"
           />
-        </div>
+        </div> */}
 
         {/* History Icon */}
         <button
@@ -60,7 +104,8 @@ const Topbar = () => {
         </button>
 
         {/* Notification Bell */}
-        <button className="p-2 text-white hover:text-gray-300 transition-colors">
+        <button onClick={handleBellClick}
+          className="p-2 text-white hover:text-gray-300 transition-colors">
           <FaBell className="text-lg" />
         </button>
 
@@ -74,41 +119,8 @@ const Topbar = () => {
         </button>
       </div>
 
+      {/* Ask Atom Popover */}
       <AIChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-
-
-      {/* Search Popover */}
-      <Popover
-        open={searchOpen}
-        anchorEl={searchAnchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        sx={{
-          '& .MuiPaper-root': {
-            width: '450px',
-            padding: '16px',
-            borderRadius: '8px',
-            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-            marginTop: '8px'
-          }
-        }}
-      >
-        <div className="p-2">
-          <h3 className="font-medium mb-2">Recent Searches</h3>
-          <div className="space-y-2">
-            {/* <p className="text-sm p-2 hover:bg-gray-100 rounded cursor-pointer">Project documentation</p>
-            <p className="text-sm p-2 hover:bg-gray-100 rounded cursor-pointer">User onboarding</p>
-            <p className="text-sm p-2 hover:bg-gray-100 rounded cursor-pointer">API integration</p> */}
-          </div>
-        </div>
-      </Popover>
 
       {/* History Popover */}
       <Popover
@@ -117,49 +129,33 @@ const Topbar = () => {
         onClose={handleClose}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'center',
+          horizontal: 'left',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'center',
+          horizontal: 'right',
         }}
       >
-        <div className="w-64 p-4">
-          <h3 className="font-medium mb-3">Recent Activity</h3>
-          {/* <div className="space-y-3">
-            <div className="text-sm">
-              <p>Viewed "Project Plan"</p>
-              <p className="text-xs text-gray-500">2 hours ago</p>
-            </div>
-            <div className="text-sm">
-              <p>Edited "User Flow"</p>
-              <p className="text-xs text-gray-500">Yesterday</p>
-            </div>
-          </div> */}
-        </div>
+        <HistoryPopover />
       </Popover>
 
-      {/* Ask Atom Popover */}
+      {/* Notifications Popover */}
       <Popover
-        open={askAtomOpen}
-        anchorEl={askAtomAnchorEl}
+        open={BellOpen}
+        anchorEl={bellAnchorEl}
         onClose={handleClose}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'center',
+          horizontal: 'right',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'center',
+          horizontal: 'right',
         }}
       >
-        <div className="w-48 p-2">
-          {/* <button className="w-full text-left p-2 hover:bg-gray-100 rounded text-sm">New Query</button>
-          <button className="w-full text-left p-2 hover:bg-gray-100 rounded text-sm">Saved Queries</button>
-          <button className="w-full text-left p-2 hover:bg-gray-100 rounded text-sm">Query History</button> */}
-        </div>
+        <NotificationsPopover />
       </Popover>
-    </div>
+    </div >
   );
 };
 
