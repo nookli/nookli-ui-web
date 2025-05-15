@@ -40,10 +40,28 @@ const Register = () => {
     navigate("/login");
   };
 
-  const handleGoogleSuccess = (credentialResponse) => {
-    const decoded = jwtDecode(credentialResponse.credential);
-    console.log("Google User:", decoded);
-    // await axios.post("/api/google-register", decoded);
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const decoded = jwtDecode(credentialResponse.credential);
+      console.log("Google user:", decoded);
+
+      const resp = await signin({
+        provider: 'google',
+        token: credentialResponse.credential,
+      });
+
+      console.log("Backend login successful:", resp);
+
+      localStorage.setItem('accessToken', resp.data?.accessToken);
+
+      navigate("/dashboard/home");
+      // Redirect to dashboard
+      // window.location.href = "/dashboard/home";
+    } catch (error) {
+      navigate("/dashboard/home");
+      console.error("Google Sign-In failed", error);
+    }
   };
 
   return (
@@ -156,7 +174,7 @@ const Register = () => {
 
 export default function RegisterWithProvider() {
   return (
-    <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
+    <GoogleOAuthProvider clientId="490964506357-8bcm5mou24gded59904m61phgqsn3dti.apps.googleusercontent.com">
       <Register />
     </GoogleOAuthProvider>
   );

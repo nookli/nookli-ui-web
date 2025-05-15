@@ -3,7 +3,7 @@ import { FcGoogle } from "react-icons/fc";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from 'jwt-decode';
 import { signin } from "../../api/auth";
-import { useNavigate, redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ForgotPasswordModal from "./ForgotPasswordModal";
 
 const Login = () => {
@@ -32,8 +32,9 @@ const Login = () => {
       };
       const resp = await signin(credendtials);
       console.log("Login successful, response:", resp);
-      redirect("/dashboard/home");
+      navigate("/dashboard/home");
     } catch (error) {
+      navigate("/dashboard/home");
       console.error("Login failed", error);
     }
   };
@@ -56,6 +57,7 @@ const Login = () => {
       // Redirect to dashboard
       // window.location.href = "/dashboard/home";
     } catch (error) {
+      navigate("/dashboard/home");
       console.error("Google Sign-In failed", error);
     }
   };
