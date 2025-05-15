@@ -1,14 +1,12 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20", 
   "hostRequirements": {
-    "cpus": 4
+    "cpus": 2,
+    "memory": "4gb"
   },
   "waitFor": "onCreateCommand",
   "updateContentCommand": "npm install",
-  "postCreateCommand": "",
-  "postAttachCommand": {
-    "server": "npm start"
-  },
+  "postCreateCommand": "npm run dev",
   "customizations": {
     "codespaces": {
       "openFiles": [

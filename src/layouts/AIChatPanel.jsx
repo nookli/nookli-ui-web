@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { HiOutlinePaperClip } from 'react-icons/hi2';
 import { FiPlus, FiSend } from "react-icons/fi";
+import { HiX, HiOutlineDotsVertical } from "react-icons/hi";
 
 const AIChatPanel = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState([
@@ -50,14 +51,20 @@ const AIChatPanel = ({ isOpen, onClose }) => {
       transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
 
       {/* Header */}
+
       <div className="flex justify-between items-center p-4 border-b">
         <div className="flex items-center gap-2 font-semibold text-gray-800">
-          <span className="w-4 h-4 bg-pink-500 rounded-full" />
+          <span className="w-4 h-4 bg-[#F53E47] rounded-full" />
           Ask Atom
         </div>
-        <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-          ⋮
-        </button>
+        <div className="flex items-center gap-2">
+          <button className="text-gray-500 hover:text-gray-700">
+            <HiOutlineDotsVertical size={18} />
+          </button>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+            <HiX size={20} />
+          </button>
+        </div>
       </div>
 
       {/* Chat Area */}

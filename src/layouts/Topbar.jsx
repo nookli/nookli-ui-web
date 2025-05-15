@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { FaBell, FaRedo, FaSearch, FaHistory, FaChevronDown } from 'react-icons/fa';
+import { FaBell, FaRedo, FaSearch, FaHistory, FaChevronDown, FaRobot } from 'react-icons/fa';
+import { GiMoebiusStar } from "react-icons/gi";
 import Popover from '@mui/material/Popover';
 import AIChatPanel from './AIChatPanel';
 import SearchPopup from './SearchPopup';
@@ -15,10 +16,9 @@ const Topbar = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [searchPopup, setsearchPopup] = useState(false);
 
-  const handleSearchOpen = () => {
+  const handleSearchClick = (event) => {
     setsearchPopup(true);
   };
-
   const handleSearchClose = () => {
     setsearchPopup(false);
   };
@@ -45,42 +45,39 @@ const Topbar = () => {
       <div className="flex-1"></div>
 
       <div className="flex items-center gap-4">
-        <div onClick={handleSearchOpen}
+        <div onClick={handleSearchClick}
           className="w-[450px] max-w-full pl-10 pr-4 py-2 rounded bg-white text-gray-700 cursor-pointer relative flex items-center
         hover:shadow focus-within:shadow transition-all duration-200 md:w-[350px] lg:w-[450px]"
         >
           <FaSearch className="absolute left-3 text-gray-400" />
           <span className="text-sm">Find files, docs, or workspaces</span>
           {/* SearchPopup */}
-          <Dialog
-            open={searchPopup}
-            onClose={handleSearchClose}
-            className="relative z-50"
-            sx={{
-              '& .MuiDialog-container': {
-                alignItems: 'flex-center',
-                justifyContent: 'flex-center',
-              },
-            }}
-            fullWidth
-            maxWidth="md"
-            PaperProps={{
-              sx: {
-                minHeight: 450,
-                display: 'flex',
-                flexDirection: 'column',
-                borderRadius: 2,
-                px: 3,
-                py: 2,
-              }
-            }}
-          >
-            {/* Close Button */}
-            <button onClick={handleSearchClose} className="absolute top-2 right-3 text-gray-600 hover:text-black">
-              <IoClose size={20} />
-            </button>
-            <SearchPopup />
-          </Dialog>
+          {searchPopup && (
+            <Dialog
+              open={searchPopup}
+              onClose={handleSearchClose}
+              fullWidth
+              maxWidth="md"
+              PaperProps={{
+                sx: {
+                  minHeight: 450,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  borderRadius: 2,
+                  px: 3,
+                  py: 2,
+                  position: 'relative',
+                }
+              }}
+            >
+
+              <button onClick={handleSearchClose} className="absolute top-2 right-3 text-gray-600 hover:text-black">
+                <IoClose size={20} />
+              </button>
+              <SearchPopup />
+            </Dialog>
+          )}
+
 
         </div>
 
@@ -112,10 +109,9 @@ const Topbar = () => {
         {/* Ask Atom Button */}
         <button
           onClick={() => setIsChatOpen(!isChatOpen)}
-          className="flex items-center gap-2 bg-[#F53E47] hover:bg-[#e2333b] text-white px-4 py-2 rounded font-semibold transition-colors"
-        >
-          Ask Atom
-          <FaChevronDown className="text-xs" />
+          className="p-2 text-white hover:text-gray-300 transition-colors">
+
+          <GiMoebiusStar className="text-lg text-[#F53E47]" />
         </button>
       </div>
 

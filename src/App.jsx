@@ -6,16 +6,19 @@ import DashboardLayout from './layouts/DashboardLayout';
 
 // Dashboard sub-pages
 import DashboardHome from './pages/dashboard/Home';
-// import New from './pages/dashboard/New';
 import Workspaces from './pages/dashboard/Workspaces.jsx';
 import Stacks from './pages/dashboard/Stacks';
-// import Flows from './pages/dashboard/Flows';
-// import Search from './pages/dashboard/Search';
+import Flows from './pages/dashboard/Flows';
+import Search from './pages/dashboard/Search';
+import LoginWithProvider from './pages/Login'
+import RegisterWithProvider from './pages/Register';
 
 const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/login" element={<LoginWithProvider />} />
+      <Route path="/register" element={<RegisterWithProvider />} />
 
       {/* Dashboard routes (protected) */}
       <Route
@@ -29,9 +32,9 @@ const App = () => {
         <Route path="home" element={<DashboardHome />} />
         <Route path="workspaces" element={<Workspaces />} />
         <Route path="stacks" element={<Stacks />} />
-        {/* <Route path="new" element={<New />} />
         <Route path="flows" element={<Flows />} />
-        <Route path="search" element={<Search />} /> */}
+        {/* <Route path="new" element={<New />} />*/}
+        {/* <Route path="search" element={<Search />} />  */}
       </Route>
 
       <Route path="*" element={<NotFound />} />
