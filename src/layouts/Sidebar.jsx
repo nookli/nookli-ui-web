@@ -10,7 +10,7 @@ import {
   Settings,
 } from '@mui/icons-material';
 import { Avatar, Popover, Box, Typography } from '@mui/material';
-import { FaBox, FaCube, FaProjectDiagram, FaLayerGroup, FaHome } from 'react-icons/fa';
+import { FaBox, FaCube, FaProjectDiagram, FaLayerGroup, FaHome, FaAlignJustify } from 'react-icons/fa';
 import { BsDiagram3 } from "react-icons/bs";
 import SettingsPopup from './SettingsPopup';
 import NewPopover from './NewPopover';
@@ -24,7 +24,7 @@ const navItems = [
   { to: '/dashboard/search', label: 'Search', icon: <Search fontSize="small" /> },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ isRightSidebarOpen, setIsRightSidebarOpen }) => {
   const [showSettingsPopup, setShowSettingsPopup] = useState(false);
   const [newAnchorEl, setNewAnchorEl] = useState(null);
 
@@ -85,7 +85,13 @@ const Sidebar = () => {
       <aside className="w-20 bg-[#324054] text-white flex flex-col justify-between py-6 px-3 shadow-lg">
         {/* Top Section */}
         <div className="flex flex-col items-center">
-          <div className="text-3xl font-bold mb-6">N</div>
+          <button
+            onClick={() => setIsRightSidebarOpen(!isRightSidebarOpen)}
+            className="w-12 h-12 flex items-center justify-center rounded hover:text-[#F53E47] transition-colors"
+          >
+            <FaAlignJustify size={22} />
+          </button>
+          {/* <div className="text-3xl font-bold mb-6">N</div> */}
           <button
             onClick={handleNewClick}
             className="flex flex-col items-center justify-center w-10 h-14 text-xs font-medium hover:text-[#F53E47] transition-colors"

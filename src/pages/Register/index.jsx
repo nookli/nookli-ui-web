@@ -28,11 +28,11 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      username: formData.username,
-      email: formData.email,
-      password: formData.password,
+      "firstName": formData.firstName,
+      "lastName": formData.lastName,
+      "username": formData.username,
+      "email": formData.email,
+      "password": formData.password,
     }
 
     const res = await signup(payload)

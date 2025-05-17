@@ -33,8 +33,7 @@ const App = () => {
         <Route path="workspaces" element={<Workspaces />} />
         <Route path="stacks" element={<Stacks />} />
         <Route path="flows" element={<Flows />} />
-        {/* <Route path="new" element={<New />} />*/}
-        {/* <Route path="search" element={<Search />} />  */}
+        <Route path="search" element={<Search />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from 'jwt-decode';
-import { signin } from "../../api/auth";
+import { googleAuth, signin } from "../../api/auth";
 import { useNavigate } from "react-router-dom";
 import ForgotPasswordModal from "./ForgotPasswordModal";
 
@@ -32,9 +32,10 @@ const Login = () => {
       };
       const resp = await signin(credendtials);
       console.log("Login successful, response:", resp);
+      localStorage.setItem('accessToken', resp.data?.accessToken);
+      localStorage.setItem('refreshToken', resp.data?.refreshToken);
       navigate("/dashboard/home");
     } catch (error) {
-      navigate("/dashboard/home");
       console.error("Login failed", error);
     }
   };
@@ -44,8 +45,8 @@ const Login = () => {
       const decoded = jwtDecode(credentialResponse.credential);
       console.log("Google user:", decoded);
 
-      const resp = await signin({
-        provider: 'google',
+      const resp = await googleAuth({
+        // provider: 'google',
         token: credentialResponse.credential,
       });
 
@@ -57,7 +58,6 @@ const Login = () => {
       // Redirect to dashboard
       // window.location.href = "/dashboard/home";
     } catch (error) {
-      navigate("/dashboard/home");
       console.error("Google Sign-In failed", error);
     }
   };

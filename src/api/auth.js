@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://api.nookli.ai/", // Replace with your backend
+    baseURL: "https://api.nookli.ai/api/v1",
 });
 
 export const signin = async (credentials) => {
@@ -18,7 +18,14 @@ export const signup = async (payload) => {
 };
 
 export const forgotPassword = async (credentials) => {
-  const response = await API.post("/auth/password/forgot"
+  const response = await API.post("auth/password/forgot"
+    , credentials
+  );
+  return response.data;
+};
+
+export const googleAuth = async (credentials) => {
+  const response = await API.post("auth/oauth/google"
     , credentials
   );
   return response.data;

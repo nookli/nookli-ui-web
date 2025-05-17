@@ -1,44 +1,42 @@
-// import { Outlet } from 'react-router-dom';
-// import Sidebar from './Sidebar';
-// import Topbar from './Topbar';
-
-// const DashboardLayout = () => {
-//   return (
-//     <div className="flex h-screen bg-gray-100">
-//       <Sidebar />
-//       <div className="flex flex-col flex-1">
-//         <Topbar />
-//         <main className="flex-1 overflow-auto p-4">
-//           <Outlet />
-//         </main>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default DashboardLayout;
-
-
-import { Outlet, NavLink } from 'react-router-dom';
-import { FaHome, FaPlus, FaSearch, FaCogs, FaBell, FaRedo, FaRocket, FaNetworkWired, FaBriefcase } from 'react-icons/fa';
-import { Avatar } from '@mui/material';
+import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import Topbar from './Topbar'
+import Topbar from './Topbar';
 
 const DashboardLayout = () => {
+  const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(true);
+
   return (
     <div className="flex h-screen">
-      {/* Sidebar */}
-     <Sidebar />
+      {/* Primary Sidebar */}
+      <Sidebar isRightSidebarOpen={isRightSidebarOpen} setIsRightSidebarOpen={setIsRightSidebarOpen} />
 
-      {/* Main layout */}
-      <main className="flex-1 flex flex-col">
-        <Topbar/>
+      {/* Main Area (Topbar + Content + Right Sidebar) */}
+      <div className="flex flex-col flex-1">
+        {/* Topbar */}
+        <Topbar />
 
-        <div className="p-6 bg-white h-full overflow-y-auto">
-          <Outlet />
+        <div className="flex h-full">
+          {/* Main Content Area */}
+          <div
+            className={`relative transition-all duration-300 bg-gray-200 ${isRightSidebarOpen ? 'w-[270px]' : 'w-0'
+              } overflow-hidden`}
+          >
+
+
+            {/* Content inside Sidebar */}
+            <div className="p-4">
+              <p className="font-semibold">Sidebar</p>
+              <p className="text-sm text-gray-700 mt-2">Add your widgets/info here.</p>
+            </div>
+          </div>
+          <div className={`transition-all duration-300 ${isRightSidebarOpen ? 'w-[calc(100%-270px)]' : 'w-full'} p-6 bg-white overflow-y-auto`}>
+            <Outlet />
+          </div>
+
+          {/* Right Sidebar */}
         </div>
-      </main>
+      </div>
     </div>
   );
 };
