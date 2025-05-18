@@ -158,7 +158,7 @@ const Login = () => {
 
 export default function LoginWithProvider() {
   return (
-    <GoogleOAuthProvider clientId="490964506357-8bcm5mou24gded59904m61phgqsn3dti.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={googleClientId || ""}> {/* Fallback to empty string if undefined */}
       <Login />
     </GoogleOAuthProvider>
   );
