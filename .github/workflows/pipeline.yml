@@ -89,8 +89,9 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: |
+          # Deploy to Cloud Run using the image built in the previous step
           gcloud run deploy nookli-ui-web \
-            --image=${{ env.IMAGE }} \ # Use the IMAGE variable set in the previous step
+            --image=${{ env.IMAGE }} \
             --region=${{ steps.vars.outputs.region }} \
             --platform=managed \
             --project=${{ steps.vars.outputs.project_id }} \
