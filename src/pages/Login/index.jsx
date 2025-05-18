@@ -157,6 +157,7 @@ const Login = () => {
 };
 
 export default function LoginWithProvider() {
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   return (
     <GoogleOAuthProvider clientId={googleClientId || ""}> {/* Fallback to empty string if undefined */}
       <Login />
