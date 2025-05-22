@@ -33,8 +33,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-push:
-    name: Test → Build → Dockerize → Push
+  build-push-and-deploy:
+    name: Build → Dockerize → Push → Deploy
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
@@ -53,9 +53,11 @@ jobs:
         # If 'web/' folder doesn't exist, commands run from the repository root by default.
         run: npm ci
 
-      - name: Build Vite App
+      - name: Build Nookli UI Web
         # If 'web/' folder doesn't exist, commands run from the repository root by default.
         run: npm run build
+        env:
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
 
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
@@ -82,40 +84,14 @@ jobs:
           IMAGE="${{ steps.vars.outputs.region }}-docker.pkg.dev/${{ steps.vars.outputs.project_id }}/nookli-ui-web/web:${{ github.sha }}"
           echo "IMAGE=$IMAGE" >> $GITHUB_ENV
           # If 'web/' folder doesn't exist and Dockerfile is at root, adjust path and context:
-          docker build -t "$IMAGE" -f Dockerfile .
-          docker push "$IMAGE"
-
-  deploy:
-    name: 🚀 Deploy to Cloud Run
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Authenticate with Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: '${{ secrets.GCP_SA_KEY }}'
-
-      - name: Set up gcloud CLI
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: Set Variables
-        id: vars
-        run: |
-          echo "project_id=${{ secrets.GCP_PROJECT_ID }}" >> $GITHUB_OUTPUT
-          echo "region=us-central1" >> $GITHUB_OUTPUT
+          docker build -t "$IMAGE" -f Dockerfile . # Build the image
+          docker push "$IMAGE" # Push the image
 
       - name: Deploy to Cloud Run
         run: |
-          IMAGE="${{ steps.vars.outputs.region }}-docker.pkg.dev/${{ steps.vars.outputs.project_id }}/nookli-ui-web/web:${{ github.sha }}"
+          # Deploy to Cloud Run using the image built in the previous step
           gcloud run deploy nookli-ui-web \
-            --image=$IMAGE \
+            --image=${{ env.IMAGE }} \
             --region=${{ steps.vars.outputs.region }} \
             --platform=managed \
             --project=${{ steps.vars.outputs.project_id }} \
