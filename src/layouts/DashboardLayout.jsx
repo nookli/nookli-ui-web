@@ -2,9 +2,16 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
+import SearchPopup from './SearchPopup';
+import Dialog from '@mui/material/Dialog';
+import { IoClose } from 'react-icons/io5';
 
 const DashboardLayout = () => {
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(true);
+  const [searchPopup, setsearchPopup] = useState(false);
+  const handleSearchClose = () => {
+    setsearchPopup(false);
+  };
 
   return (
     <div className="flex h-screen">
@@ -14,7 +21,7 @@ const DashboardLayout = () => {
       {/* Main Area (Topbar + Content + Right Sidebar) */}
       <div className="flex flex-col flex-1">
         {/* Topbar */}
-        <Topbar />
+        <Topbar setsearchPopup={setsearchPopup} />
 
         <div className="flex h-full">
           {/* Main Content Area */}
@@ -37,6 +44,29 @@ const DashboardLayout = () => {
           {/* Right Sidebar */}
         </div>
       </div>
+      <Dialog
+        open={searchPopup}
+        onClose={handleSearchClose}
+        fullWidth
+        maxWidth="md"
+        PaperProps={{
+          sx: {
+            minHeight: 450,
+            display: 'flex',
+            flexDirection: 'column',
+            borderRadius: 2,
+            px: 3,
+            py: 2,
+            position: 'relative',
+          }
+        }}
+      >
+
+        <button onClick={() => setsearchPopup(false)} className="absolute top-2 right-3 text-gray-600 hover:text-black">
+          <IoClose size={20} />
+        </button>
+        <SearchPopup />
+      </Dialog>
     </div>
   );
 };

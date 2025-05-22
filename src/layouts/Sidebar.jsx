@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   Add,
@@ -9,24 +9,35 @@ import {
   Search,
   Settings,
 } from '@mui/icons-material';
-import { Avatar, Popover, Box, Typography } from '@mui/material';
-import { FaBox, FaCube, FaProjectDiagram, FaLayerGroup, FaHome, FaAlignJustify } from 'react-icons/fa';
+import { Avatar } from '@mui/material';
+import { FaBox, FaCube, FaLayerGroup, FaHome, FaAlignJustify } from 'react-icons/fa';
 import { BsDiagram3 } from "react-icons/bs";
 import SettingsPopup from './SettingsPopup';
 import NewPopover from './NewPopover';
 import SwitchAccountPopover from './SwitchAccountPopover';
+import { useUserStore } from '../redux/useUserStore';
+
 
 const navItems = [
   { to: '/dashboard/home', label: 'Home', icon: <Home fontSize="small" /> },
-  { to: '/dashboard/workspaces', label: 'Workspace', icon: <Workspaces fontSize="small" /> },
+  { to: '/dashboard/workspaces', label: 'Spaces', icon: <Workspaces fontSize="small" /> },
   { to: '/dashboard/stacks', label: 'Stacks', icon: <Storage fontSize="small" /> },
   { to: '/dashboard/flows', label: 'Flows', icon: <Hub fontSize="small" /> },
   { to: '/dashboard/search', label: 'Search', icon: <Search fontSize="small" /> },
 ];
 
 const Sidebar = ({ isRightSidebarOpen, setIsRightSidebarOpen }) => {
+
   const [showSettingsPopup, setShowSettingsPopup] = useState(false);
   const [newAnchorEl, setNewAnchorEl] = useState(null);
+
+  const { user, fetchUser } = useUserStore();
+
+  useEffect(() => {
+    if (!user) fetchUser();
+  }, [user, fetchUser]);
+
+  const avatar = user?.avatar || 'https://i.pravatar.cc/49';
 
   const handleNewClick = (event) => {
     setNewAnchorEl(event.currentTarget);
@@ -124,9 +135,10 @@ const Sidebar = ({ isRightSidebarOpen, setIsRightSidebarOpen }) => {
           <Avatar
             onClick={handleSwitchOpen}
             alt="User Avatar"
-            src="https://i.pravatar.cc/49"
+            src={avatar || 'https://i.pravatar.cc/49'} // fallback image
             sx={{ width: 32, height: 32 }}
           />
+
         </div>
       </aside>
 

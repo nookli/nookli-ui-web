@@ -4,6 +4,7 @@ import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { signup } from "../../api/auth";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -27,19 +28,26 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const payload = {
-      "firstName": formData.firstName,
-      "lastName": formData.lastName,
-      "username": formData.username,
-      "email": formData.email,
-      "password": formData.password,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+    };
+
+    try {
+      const res = await signup(payload);
+      console.log("Registration successful, response:", res);
+      toast.success("User Registerd successful!");
+      navigate("/login");
+    } catch (error) {
+      console.error("Registration failed", error);
+      const message = error?.response?.data?.message || "Registration failed. Please try again.";
+      toast.error(message);
     }
-
-    const res = await signup(payload)
-    console.log("Registration successful, response:", res);
-    navigate("/login");
   };
-
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
@@ -54,12 +62,12 @@ const Register = () => {
       console.log("Backend login successful:", resp);
 
       localStorage.setItem('accessToken', resp.data?.accessToken);
-
+      toast.success("Google Sign-In successful!");
       navigate("/dashboard/home");
       // Redirect to dashboard
       // window.location.href = "/dashboard/home";
     } catch (error) {
-      navigate("/dashboard/home");
+      toast.error("Google Sign-In failed", error);
       console.error("Google Sign-In failed", error);
     }
   };

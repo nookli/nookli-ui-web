@@ -2,6 +2,10 @@ import React, { useState, useRef } from 'react';
 import { HiOutlinePaperClip } from 'react-icons/hi2';
 import { FiPlus, FiSend } from "react-icons/fi";
 import { HiX, HiOutlineDotsVertical } from "react-icons/hi";
+import { FiExternalLink, FiClock } from "react-icons/fi"; // React Icons
+import { Popover } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+
 
 const AIChatPanel = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState([
@@ -9,6 +13,18 @@ const AIChatPanel = ({ isOpen, onClose }) => {
     { text: "Help me by summarizing a document", isUser: true },
     { text: "Sure :)", isUser: false },
   ]);
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
   const [inputValue, setInputValue] = useState('');
 
   const [showOptions, setShowOptions] = useState(false);
@@ -59,7 +75,8 @@ const AIChatPanel = ({ isOpen, onClose }) => {
         </div>
         <div className="flex items-center gap-2">
           <button className="text-gray-500 hover:text-gray-700">
-            <HiOutlineDotsVertical size={18} />
+            <HiOutlineDotsVertical onClick={handleClick}
+              size={18} />
           </button>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <HiX size={20} />
@@ -124,6 +141,40 @@ const AIChatPanel = ({ isOpen, onClose }) => {
           </button>
         </div>
 
+        <Popover
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          PaperProps={{
+            sx: {
+              width: "180px",
+              mt: 1,
+              p: 0,
+            },
+          }}
+        >
+          <div className="flex flex-col">
+            <button
+              onClick={() => navigate("/dashboard/chat")}
+              className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 text-left"
+            >
+              <FiExternalLink className="text-gray-600" />
+              Open In Chat
+            </button>
+            <hr className="border-gray-200" />
+            <button
+              onClick={() => alert("View history")}
+              className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 text-left"
+            >
+              <FiClock className="text-gray-600" />
+              View History
+            </button>
+          </div>
+        </Popover>
 
       </div>
     </div>

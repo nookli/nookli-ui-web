@@ -12,32 +12,38 @@ import Flows from './pages/dashboard/Flows';
 import Search from './pages/dashboard/Search';
 import LoginWithProvider from './pages/Login'
 import RegisterWithProvider from './pages/Register';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<LoginWithProvider />} />
-      <Route path="/register" element={<RegisterWithProvider />} />
+    <>
+      <ToastContainer position="top-right" autoClose={3000} />
 
-      {/* Dashboard routes (protected) */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="home" element={<DashboardHome />} />
-        <Route path="workspaces" element={<Workspaces />} />
-        <Route path="stacks" element={<Stacks />} />
-        <Route path="flows" element={<Flows />} />
-        <Route path="search" element={<Search />} />
-      </Route>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<LoginWithProvider />} />
+        <Route path="/register" element={<RegisterWithProvider />} />
 
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        {/* Dashboard routes (protected) */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="home" element={<DashboardHome />} />
+          <Route path="workspaces" element={<Workspaces />} />
+          <Route path="stacks" element={<Stacks />} />
+          <Route path="flows" element={<Flows />} />
+          <Route path="search" element={<Search />} />
+        </Route>
+
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   );
 };
 

@@ -5,8 +5,12 @@ import { jwtDecode } from 'jwt-decode';
 import { googleAuth, signin } from "../../api/auth";
 import { useNavigate } from "react-router-dom";
 import ForgotPasswordModal from "./ForgotPasswordModal";
+import { useAuth } from "../../contexts/AuthContext";
+import { toast } from "react-toastify";
+
 
 const Login = () => {
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -16,51 +20,50 @@ const Login = () => {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    // if (credentials.provider === 'google') {
-    //   return axios.post(`${API_BASE}/auth/oauth/google`, {
-    //     token: credentials.token,
-    //   });
-    // }
-    // e.preventDefault();
 
     try {
-      console.log("Logging in:", { email, password, rememberMe });
-      const credendtials = {
-        email,
-        password,
-        // rememberMe,
-      };
-      const resp = await signin(credendtials);
-      console.log("Login successful, response:", resp);
-      localStorage.setItem('accessToken', resp.data?.accessToken);
-      localStorage.setItem('refreshToken', resp.data?.refreshToken);
+      const credentials = { email, password };
+      const resp = await signin(credentials); // resp is already response.data
+
+      const { accessToken, refreshToken, user, message } = resp;
+
+      console.log(resp, "response");
+      login({ user, accessToken });
+      toast.success(message || "Login successful!");
+      console.log("login successful");
       navigate("/dashboard/home");
     } catch (error) {
-      console.error("Login failed", error);
+      console.error("login failed", error);
+      toast.error(
+        error?.response?.data?.message || "Login failed. Please try again."
+      );
     }
   };
+
+
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       const decoded = jwtDecode(credentialResponse.credential);
-      console.log("Google user:", decoded);
-
       const resp = await googleAuth({
-        // provider: 'google',
         token: credentialResponse.credential,
       });
 
-      console.log("Backend login successful:", resp);
+      const { accessToken, user } = resp.data;
 
-      localStorage.setItem('accessToken', resp.data?.accessToken);
+      // Optional: save token
+      localStorage.setItem('accessToken', accessToken);
 
+      // Save to context
+      login({ user, accessToken });
+      toast.success('Google Sign-In successful!');
       navigate("/dashboard/home");
-      // Redirect to dashboard
-      // window.location.href = "/dashboard/home";
     } catch (error) {
-      console.error("Google Sign-In failed", error);
+      console.log(error)
+      toast.error(error.response.data.error);
     }
   };
+
 
 
   return (

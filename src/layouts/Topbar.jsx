@@ -9,18 +9,14 @@ import { IoClose } from 'react-icons/io5';
 import HistoryPopover from './HistoryPopover';
 import NotificationsPopover from './NotificationsPopover';
 
-const Topbar = () => {
+const Topbar = ({ setsearchPopup }) => {
   // State for all popovers
   const [historyAnchorEl, setHistoryAnchorEl] = useState(null);
   const [bellAnchorEl, setBellAnchorEl] = useState(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [searchPopup, setsearchPopup] = useState(false);
 
   const handleSearchClick = (event) => {
     setsearchPopup(true);
-  };
-  const handleSearchClose = () => {
-    setsearchPopup(false);
   };
 
   const handleHistoryClick = (event) => {
@@ -51,32 +47,6 @@ const Topbar = () => {
         >
           <FaSearch className="absolute left-3 text-gray-400" />
           <span className="text-sm">Find files, docs, or workspaces</span>
-          {/* SearchPopup */}
-          {searchPopup && (
-            <Dialog
-              open={searchPopup}
-              onClose={handleSearchClose}
-              fullWidth
-              maxWidth="md"
-              PaperProps={{
-                sx: {
-                  minHeight: 450,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  borderRadius: 2,
-                  px: 3,
-                  py: 2,
-                  position: 'relative',
-                }
-              }}
-            >
-
-              <button onClick={handleSearchClose} className="absolute top-2 right-3 text-gray-600 hover:text-black">
-                <IoClose size={20} />
-              </button>
-              <SearchPopup />
-            </Dialog>
-          )}
 
 
         </div>

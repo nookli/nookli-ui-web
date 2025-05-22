@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { forgotPassword } from '../../api/auth';
+import { toast } from "react-toastify";
 
 const ForgotPasswordModal = ({ open, onClose }) => {
   const [forgotEmail, setForgotEmail] = useState('');
@@ -27,10 +28,10 @@ const ForgotPasswordModal = ({ open, onClose }) => {
     setForgotMessage('Sending reset link...');
     try {
       const response = await forgotPassword(credentials);
-      setForgotMessage(response.data.message || 'Check your email for reset instructions.');
+      toast.success(response.data.message || 'Check your email for reset instructions.');
     } catch (error) {
       console.error('Error sending reset link:', error);
-      setForgotMessage('Failed to send reset link. Please try again.');
+      toast.error(error.response.data.error);
     }
     setForgotEmail('');
     setTimeout(() => {
