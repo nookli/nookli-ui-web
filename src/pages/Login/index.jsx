@@ -5,12 +5,11 @@ import { jwtDecode } from 'jwt-decode';
 import { googleAuth, signin } from "../../api/auth";
 import { useNavigate } from "react-router-dom";
 import ForgotPasswordModal from "./ForgotPasswordModal";
-import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "react-toastify";
+import { useUserStore } from "../../redux/useUserStore";
 
 
 const Login = () => {
-  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -28,7 +27,7 @@ const Login = () => {
       const { accessToken, refreshToken, user, message } = resp;
 
       console.log(resp, "response");
-      login({ user, accessToken });
+      useUserStore.getState().login({ user, accessToken, refreshToken });
       toast.success(message || "Login successful!");
       console.log("login successful");
       navigate("/dashboard/home");
@@ -166,3 +165,6 @@ export default function LoginWithProvider() {
     </GoogleOAuthProvider>
   );
 }
+
+
+// 490964506357-8bcm5mou24gded59904m61phgqsn3dti.apps.googleusercontent.com"
