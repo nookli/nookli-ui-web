@@ -56,9 +56,7 @@ jobs:
       - name: Build Nookli UI Web
         # If 'web/' folder doesn't exist, commands run from the repository root by default.
         run: npm run build
-        #env:
-        #  VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
-
+        
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
         with:
