@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { FcGoogle } from "react-icons/fc";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
+import { FcGoogle } from "react-icons/fc";
 import { googleAuth, signin } from "../../api/auth";
 import { useNavigate } from "react-router-dom";
 import ForgotPasswordModal from "./ForgotPasswordModal";
 import { toast } from "react-toastify";
 import { useUserStore } from "../../redux/useUserStore";
-
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,20 +15,22 @@ const Login = () => {
   const [showForgotModal, setShowForgotModal] = useState(false);
 
   const navigate = useNavigate();
+  const loginToStore = useUserStore.getState().login;
+  const addAccount = useUserStore.getState().addAccount;
 
   const handleSignIn = async (e) => {
     e.preventDefault();
 
     try {
       const credentials = { email, password };
-      const resp = await signin(credentials); // resp is already response.data
+      const resp = await signin(credentials);
 
       const { accessToken, refreshToken, user, message } = resp;
 
-      console.log(resp, "response");
-      useUserStore.getState().login({ user, accessToken, refreshToken });
+      loginToStore({ user, accessToken, refreshToken });
+      addAccount({ user, accessToken, refreshToken });
+
       toast.success(message || "Login successful!");
-      console.log("login successful");
       navigate("/dashboard/home");
     } catch (error) {
       console.error("login failed", error);
@@ -39,8 +40,6 @@ const Login = () => {
     }
   };
 
-
-
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       const decoded = jwtDecode(credentialResponse.credential);
@@ -48,22 +47,18 @@ const Login = () => {
         token: credentialResponse.credential,
       });
 
-      const { accessToken, user } = resp.data;
+      const { accessToken, refreshToken, user } = resp.data;
 
-      // Optional: save token
-      localStorage.setItem('accessToken', accessToken);
+      loginToStore({ user, accessToken, refreshToken });
+      addAccount({ user, accessToken, refreshToken });
 
-      // Save to context
-      login({ user, accessToken });
-      toast.success('Google Sign-In successful!');
+      toast.success("Google Sign-In successful!");
       navigate("/dashboard/home");
     } catch (error) {
-      console.log(error)
-      toast.error(error.response.data.error);
+      console.log("Google Sign-In failed", error);
+      toast.error(error?.response?.data?.error || "Google Sign-In failed.");
     }
   };
-
-
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50 px-4">
@@ -116,8 +111,11 @@ const Login = () => {
               />
               Remember me
             </label>
-            <button type="button" onClick={() => setShowForgotModal(true)}
-              className="text-blue-500 hover:underline">
+            <button
+              type="button"
+              onClick={() => setShowForgotModal(true)}
+              className="text-blue-500 hover:underline"
+            >
               Forgot Password?
             </button>
             <ForgotPasswordModal open={showForgotModal} onClose={() => setShowForgotModal(false)} />
@@ -131,19 +129,18 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Divider */}
         <div className="flex items-center my-4">
           <hr className="flex-grow border-gray-300" />
           <span className="mx-2 text-sm text-gray-500">Or Sign In With</span>
           <hr className="flex-grow border-gray-300" />
         </div>
 
-        {/* Google Sign In */}
         <GoogleLogin
           onSuccess={handleGoogleSuccess}
-          onError={() => console.log("Login Failed")}
+          onError={() => toast.error("Google login failed")}
           useOneTap
         />
+
         <p className="mt-6 text-sm text-center text-gray-600">
           Don’t have an account?{" "}
           <button
