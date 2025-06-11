@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
 import { signup } from "../../api/auth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import supabase from "../../config/supabase";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -40,7 +39,7 @@ const Register = () => {
     try {
       const res = await signup(payload);
       console.log("Registration successful, response:", res);
-      toast.success("User Registerd successful!");
+      toast.success("User Registered successfully!");
       navigate("/login");
     } catch (error) {
       console.error("Registration failed", error);
@@ -49,27 +48,16 @@ const Register = () => {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
-    try {
-      const decoded = jwtDecode(credentialResponse.credential);
-      console.log("Google user:", decoded);
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
 
-      const resp = await signin({
-        provider: 'google',
-        token: credentialResponse.credential,
-      });
-
-      console.log("Backend login successful:", resp);
-
-      localStorage.setItem('accessToken', resp.data?.accessToken);
-      toast.success("Google Sign-In successful!");
-      navigate("/dashboard/home");
-      // Redirect to dashboard
-      // window.location.href = "/dashboard/home";
-    } catch (error) {
-      toast.error("Google Sign-In failed", error);
-      console.error("Google Sign-In failed", error);
+    if (error) {
+      console.error("Google Sign-In error", error);
+      toast.error("Google Sign-In failed.");
     }
+    // Supabase will redirect back automatically after sign-in.
   };
 
   return (
@@ -162,28 +150,26 @@ const Register = () => {
         </div>
 
         {/* Google Sign Up */}
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={() => console.log("Google Login Failed")}
-          useOneTap
-        />
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded py-2 hover:bg-gray-100"
+        >
+          <FcGoogle size={20} />
+          Sign up with Google
+        </button>
+
         <p className="mt-6 text-sm text-center text-gray-600">
           Already have an account?{" "}
           <button
             onClick={() => navigate("/login")}
             className="text-blue-500 hover:underline"
           >
-            Sign In          </button>
+            Sign In
+          </button>
         </p>
       </div>
     </div>
   );
 };
 
-export default function RegisterWithProvider() {
-  return (
-    <GoogleOAuthProvider clientId="603706786782-78vesem1lqo5v01m8jn6lfn5tc2dlh9l.apps.googleusercontent.com">
-      <Register />
-    </GoogleOAuthProvider>
-  );
-}
+export default Register;

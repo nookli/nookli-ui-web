@@ -1,12 +1,11 @@
-import { useState } from "react";
-import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
+import { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { googleAuth, signin } from "../../api/auth";
+import { signin } from "../../api/auth";
 import { useNavigate } from "react-router-dom";
 import ForgotPasswordModal from "./ForgotPasswordModal";
 import { toast } from "react-toastify";
 import { useUserStore } from "../../redux/useUserStore";
+import supabase from "../../config/supabase";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -18,45 +17,46 @@ const Login = () => {
   const loginToStore = useUserStore.getState().login;
   const addAccount = useUserStore.getState().addAccount;
 
+  useEffect(() => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        const { user, access_token, refresh_token } = session;
+        loginToStore({ user, accessToken: access_token, refreshToken: refresh_token });
+        addAccount({ user, accessToken: access_token, refreshToken: refresh_token });
+        toast.success("Google Sign-In successful!");
+        navigate("/dashboard/home");
+      }
+    });
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
   const handleSignIn = async (e) => {
     e.preventDefault();
-
     try {
       const credentials = { email, password };
       const resp = await signin(credentials);
-
       const { accessToken, refreshToken, user, message } = resp;
-
       loginToStore({ user, accessToken, refreshToken });
       addAccount({ user, accessToken, refreshToken });
-
       toast.success(message || "Login successful!");
       navigate("/dashboard/home");
     } catch (error) {
       console.error("login failed", error);
-      toast.error(
-        error?.response?.data?.message || "Login failed. Please try again."
-      );
+      toast.error(error?.response?.data?.message || "Login failed. Please try again.");
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
-    try {
-      const decoded = jwtDecode(credentialResponse.credential);
-      const resp = await googleAuth({
-        token: credentialResponse.credential,
-      });
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
 
-      const { accessToken, refreshToken, user } = resp.data;
-
-      loginToStore({ user, accessToken, refreshToken });
-      addAccount({ user, accessToken, refreshToken });
-
-      toast.success("Google Sign-In successful!");
-      navigate("/dashboard/home");
-    } catch (error) {
-      console.log("Google Sign-In failed", error);
-      toast.error(error?.response?.data?.error || "Google Sign-In failed.");
+    if (error) {
+      console.error("Google login failed:", error.message);
+      toast.error("Google login failed");
     }
   };
 
@@ -135,11 +135,13 @@ const Login = () => {
           <hr className="flex-grow border-gray-300" />
         </div>
 
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={() => toast.error("Google login failed")}
-          useOneTap
-        />
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded py-2 hover:bg-gray-100"
+        >
+          <FcGoogle size={20} />
+          <span className="text-sm font-medium">Continue with Google</span>
+        </button>
 
         <p className="mt-6 text-sm text-center text-gray-600">
           Don’t have an account?{" "}
@@ -155,13 +157,4 @@ const Login = () => {
   );
 };
 
-export default function LoginWithProvider() {
-  return (
-    <GoogleOAuthProvider clientId="603706786782-78vesem1lqo5v01m8jn6lfn5tc2dlh9l.apps.googleusercontent.com">
-      <Login />
-    </GoogleOAuthProvider>
-  );
-}
-
-
-// 490964506357-8bcm5mou24gded59904m61phgqsn3dti.apps.googleusercontent.com"
+export default Login;
