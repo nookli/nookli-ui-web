@@ -16,6 +16,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
+
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
@@ -39,6 +40,8 @@ const App = () => {
           <Route path="stacks" element={<Stacks />} />
           <Route path="flows" element={<Flows />} />
           <Route path="search" element={<Search />} />
+          {/* default is home always */}
+          <Route index element={<DashboardHome />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />
