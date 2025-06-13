@@ -57,8 +57,6 @@ const Login = () => {
       },
     });
 
-    alert('sfd')
-
     if (data) {
       const { user, access_token, refresh_token } = data;
       const userObj = {

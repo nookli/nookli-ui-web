@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
+import LandingPage from './pages/LandingPage';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './routes/ProtectedRoute';
 import DashboardLayout from './layouts/DashboardLayout';
@@ -21,7 +21,7 @@ const App = () => {
       <ToastContainer position="top-right" autoClose={3000} />
 
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginWithProvider />} />
         <Route path="/register" element={<RegisterWithProvider />} />
 
