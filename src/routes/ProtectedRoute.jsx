@@ -1,12 +1,11 @@
-import { Navigate } from 'react-router-dom';
-import { useUserStore } from '../redux/useUserStore';
+import { Navigate } from "react-router-dom";
+import { useUserStore } from "../redux/useUserStore";
 
 const ProtectedRoute = ({ children }) => {
-    const user = useUserStore((state) => state.user);
-    const isAuthenticated = !!user;
-  // const isAuthenticated = localStorage.getItem('sb-pbpfolqijszsnvtydalm-auth-token'); // Or use context
-  // return children
-  return isAuthenticated ? children : <Navigate to="/" />;
+  const user = useUserStore((state) => state.user);
+  const isAuthenticated = !!user;
+
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;
