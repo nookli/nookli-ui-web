@@ -1,11 +1,13 @@
-import React from 'react';
+import WorkspaceTabs from '../../components/WorkspaceTabs.jsx'
+import TabCreateModal from '../../components/TabCreateModal.jsx'
+import WorkspaceContent from '../../components/WorkspaceContent.jsx'
 
-const Home = () => {
-    return (
-        <div>
-            <h1>Home Page</h1>
-            <p>Welcome to the home page!</p>
-        </div>
-    )
+export default function Home() {
+  return (
+    <div className="p-6">
+      <WorkspaceTabs />
+      <TabCreateModal />
+      <WorkspaceContent />
+    </div>
+  )
 }
-export default Home;

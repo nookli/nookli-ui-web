@@ -50,10 +50,27 @@ const Login = () => {
   };
 
   const handleGoogleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data,error } = await supabase.auth.signInWithOAuth({
       provider: "google",
     });
 
+    if (data) {
+      const { user, access_token, refresh_token } = data;
+      const userObj = {
+        id: user.id,
+        email: user.email,
+        username: user.user_metadata.full_name?.toLowerCase().replace(/\s+/g, '') || user.email.split('@')[0],
+        firstName: user.user_metadata.given_name || user.user_metadata.full_name?.split(' ')[0] || '',
+        lastName: user.user_metadata.family_name || user.user_metadata.full_name?.split(' ')[1] || '',
+        img: user.user_metadata.picture || '',
+      };
+      
+      loginToStore({ user: userObj, accessToken: access_token, refreshToken: refresh_token });
+      addAccount({ user: userObj, accessToken: access_token, refreshToken: refresh_token });
+      toast.success("Google Sign-In successful!");
+      navigate("/dashboard/home");
+    }
+    
     if (error) {
       console.error("Google login failed:", error.message);
       toast.error("Google login failed");
