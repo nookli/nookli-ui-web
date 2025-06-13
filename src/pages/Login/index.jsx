@@ -52,7 +52,12 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     const { data,error } = await supabase.auth.signInWithOAuth({
       provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/dashboard/home`,
+      },
     });
+
+    alert('sfd')
 
     if (data) {
       const { user, access_token, refresh_token } = data;

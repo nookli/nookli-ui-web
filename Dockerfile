@@ -14,6 +14,29 @@ RUN npm ci
 # Copy the rest of the application code
 COPY . .
 
+server {
+    listen 80;
+    server_name localhost; # Adjust if you have a specific domain
+
+    root   /usr/share/nginx/html;
+    index  index.html index.htm;
+
+    # Serve static files directly
+    location ~* \.(?:manifest|appcache|html?|xml|json)$ {
+        expires -1; # No caching for manifest and HTML files
+    }
+
+    location ~* \.(?:css|js|jpg|jpeg|gif|png|svg|ico|webp|woff|woff2|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public";
+    }
+
+    # For everything else, serve index.html for client-side routing
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+
 # Build the application
 # Replace 'build' with your actual build script name in package.json if different
 RUN npm run build
