@@ -11,7 +11,7 @@ const creationItems = [
   { title: 'Workspace', description: 'Where everything lives and connects', icon: <FaHome size={20} className="text-white" /> },
 ];
 
-const NewPopover = ({ open, anchorEl, onClose }) => {
+const NewPopover = ({ open, anchorEl, onClose, onWorkspaceClick }) => {
   return (
     <Popover
       open={open}
@@ -35,6 +35,12 @@ const NewPopover = ({ open, anchorEl, onClose }) => {
           {creationItems.map((item, index) => (
             <Box
               key={index}
+              onClick={() => {
+                if (item.title === 'Workspace' && typeof onWorkspaceClick === 'function') {
+                  onWorkspaceClick();
+                }
+                onClose(); // Optionally close the popover after click
+              }}
               sx={{
                 display: 'flex',
                 alignItems: 'flex-start',
@@ -46,9 +52,8 @@ const NewPopover = ({ open, anchorEl, onClose }) => {
                 },
               }}
             >
-              <div className={`p-2 mr-3 rounded-full bg-[#F53E47]`}>
-                {React.cloneElement(item.icon, {
-                })}
+              <div className="p-2 mr-3 rounded-full bg-[#F53E47]">
+                {React.cloneElement(item.icon)}
               </div>
               <Box>
                 <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '14px', color: '#111827' }}>

@@ -33,11 +33,11 @@ const ICONS = {
 
 const WorkspaceTabs = () => {
   const { tabs, activeTabId, setActiveTab } = useTabStore()
-
+ const pinnedTabs = tabs.filter(tab => tab.pinned)
   return (
     <div className="flex gap-4 border-b border-gray-300 pb-2">
       <IconContext.Provider value={{ size: '20' }}>
-        {tabs.map((tab) => {
+        {pinnedTabs.map((tab) => {
           const Icon = ICONS[tab.icon] || AiOutlineTeam 
           const isActive = tab.id === activeTabId
           return (

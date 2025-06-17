@@ -66,12 +66,21 @@ const TabCreateModal = () => {
   return (
     <>
       <div className="mt-4">
-        <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setOpen(true)}
+        >
           + Add Workspace
         </Button>
       </div>
 
-      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>Add New Workspace</DialogTitle>
         <DialogContent className="space-y-4 mt-2">
           <TextField
@@ -88,16 +97,18 @@ const TabCreateModal = () => {
               onChange={(e) => setIcon(e.target.value)}
               label="Workspace Icon"
               renderValue={(val) => {
-  const selectedIcon = iconOptions.find((i) => i.name === val)
-  return selectedIcon ? (
-    <div className="flex items-center gap-2">
-      <IconContext.Provider value={{ size: 20 }}>
-        {selectedIcon.icon}
-      </IconContext.Provider>
-      <span>{val}</span>
-    </div>
-  ) : <span>Select icon</span>
-}}
+                const selectedIcon = iconOptions.find((i) => i.name === val);
+                return selectedIcon ? (
+                  <div className="flex items-center gap-2">
+                    <IconContext.Provider value={{ size: 20 }}>
+                      {selectedIcon.icon}
+                    </IconContext.Provider>
+                    <span>{val}</span>
+                  </div>
+                ) : (
+                  <span>Select icon</span>
+                );
+              }}
             >
               {iconOptions.map((option) => (
                 <MenuItem key={option.name} value={option.name}>
@@ -158,7 +169,7 @@ const TabCreateModal = () => {
         </DialogActions>
       </Dialog>
     </>
-  )
+  );
 }
 
 export default TabCreateModal
