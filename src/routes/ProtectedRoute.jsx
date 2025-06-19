@@ -1,10 +1,10 @@
 import { Navigate } from "react-router-dom";
-import { useUserStore } from "../redux/useUserStore";
+import { useCurrentUserStore } from "../redux/useCurrentUserStore";
 
 const ProtectedRoute = ({ children }) => {
-  const user = useUserStore((state) => state.user);
-  const isAuthenticated = !!user;
-// return children;
+  const currentUser = useCurrentUserStore((state) => state.currentUser);
+  const isAuthenticated = !!currentUser;
+
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
