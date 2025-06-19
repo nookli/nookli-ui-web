@@ -4,7 +4,7 @@ import { useUserStore } from "../redux/useUserStore";
 const ProtectedRoute = ({ children }) => {
   const user = useUserStore((state) => state.user);
   const isAuthenticated = !!user;
-
+// return children;
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
