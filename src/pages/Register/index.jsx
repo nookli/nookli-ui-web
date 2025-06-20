@@ -38,7 +38,6 @@ const Register = () => {
 
     try {
       const res = await signup(payload);
-      console.log("Registration successful, response:", res);
       toast.success("User Registered successfully!");
       navigate("/login");
     } catch (error) {

@@ -10,36 +10,50 @@ import {
   Settings,
 } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
-import { FaBox, FaCube, FaLayerGroup, FaHome, FaAlignJustify } from 'react-icons/fa';
-import { BsDiagram3 } from "react-icons/bs";
+import {
+  FaBox,
+  FaCube,
+  FaLayerGroup,
+  FaHome,
+  FaAlignJustify,
+} from 'react-icons/fa';
+import { BsDiagram3 } from 'react-icons/bs';
 import SettingsPopup from './SettingsPopup';
 import NewPopover from './NewPopover';
 import SwitchAccountPopover from './SwitchAccountPopover';
 import { useCurrentUserStore } from '../redux/useCurrentUserStore';
 import { useUserAccountsStore } from '../redux/useUserAccountsStore';
 
-
 const navItems = [
   { to: '/dashboard/home', label: 'Home', icon: <Home fontSize="small" /> },
-  { to: '/dashboard/workspaces', label: 'Spaces', icon: <Workspaces fontSize="small" /> },
-  { to: '/dashboard/stacks', label: 'Stacks', icon: <Storage fontSize="small" /> },
+  {
+    to: '/dashboard/workspaces',
+    label: 'Spaces',
+    icon: <Workspaces fontSize="small" />,
+  },
+  {
+    to: '/dashboard/stacks',
+    label: 'Stacks',
+    icon: <Storage fontSize="small" />,
+  },
   { to: '/dashboard/flows', label: 'Flows', icon: <Hub fontSize="small" /> },
-  { to: '/dashboard/search', label: 'Search', icon: <Search fontSize="small" /> },
+  {
+    to: '/dashboard/search',
+    label: 'Search',
+    icon: <Search fontSize="small" />,
+  },
 ];
 
 const Sidebar = ({ isRightSidebarOpen, setIsRightSidebarOpen }) => {
-
   const [showSettingsPopup, setShowSettingsPopup] = useState(false);
   const [newAnchorEl, setNewAnchorEl] = useState(null);
 
   const currentUser = useCurrentUserStore((state) => state.currentUser);
   const allUsersSessions = useUserAccountsStore((state) => state.users);
-console.log("allUsersSessions", allUsersSessions);
- useEffect(() => {
+  useEffect(() => {
     if (currentUser) {
       return;
     } else navigate('/login');
-
   }, [currentUser]);
 
   const avatar = currentUser?.avatar || 'https://i.pravatar.cc/49';
@@ -67,32 +81,31 @@ console.log("allUsersSessions", allUsersSessions);
 
   const switchOpen = Boolean(switchAnchorEl);
 
-
   const creationItems = [
     {
       title: 'Block',
       description: 'Create a single learning element',
-      icon: <FaBox />
+      icon: <FaBox />,
     },
     {
       title: 'Unit',
       description: 'Group blocks into a focused lesson',
-      icon: <FaCube />
+      icon: <FaCube />,
     },
     {
       title: 'Flow',
       description: 'Wrap knowledge into summaries',
-      icon: <BsDiagram3 />
+      icon: <BsDiagram3 />,
     },
     {
       title: 'Stack',
       description: 'Full course built from paths and units',
-      icon: <FaLayerGroup />
+      icon: <FaLayerGroup />,
     },
     {
       title: 'Workspace',
       description: 'Where everything lives and connects',
-      icon: <FaHome />
+      icon: <FaHome />,
     },
   ];
 
@@ -121,7 +134,10 @@ console.log("allUsersSessions", allUsersSessions);
                 key={label}
                 to={to}
                 className={({ isActive }) =>
-                  `flex flex-col items-center justify-center w-10 h-14 text-xs font-medium transition-colors duration-200 ${isActive ? 'text-[#F53E47]' : 'text-white hover:text-[#F53E47] opacity-80'
+                  `flex flex-col items-center justify-center w-10 h-14 text-xs font-medium transition-colors duration-200 ${
+                    isActive
+                      ? 'text-[#F53E47]'
+                      : 'text-white hover:text-[#F53E47] opacity-80'
                   }`
                 }
               >
@@ -134,7 +150,10 @@ console.log("allUsersSessions", allUsersSessions);
 
         {/* Bottom Section */}
         <div className="flex flex-col items-center gap-4">
-          <button onClick={() => setShowSettingsPopup(true)} className="hover:text-[#F53E47]">
+          <button
+            onClick={() => setShowSettingsPopup(true)}
+            className="hover:text-[#F53E47]"
+          >
             <Settings sx={{ fontSize: 20 }} />
           </button>
           <Avatar
@@ -143,11 +162,14 @@ console.log("allUsersSessions", allUsersSessions);
             src={avatar || 'https://i.pravatar.cc/49'} // fallback image
             sx={{ width: 32, height: 32 }}
           />
-
         </div>
       </aside>
 
-      <NewPopover open={newOpen} anchorEl={newAnchorEl} onClose={handleNewClose} />
+      <NewPopover
+        open={newOpen}
+        anchorEl={newAnchorEl}
+        onClose={handleNewClose}
+      />
       <SwitchAccountPopover
         open={switchOpen}
         anchorEl={switchAnchorEl}
@@ -167,7 +189,9 @@ console.log("allUsersSessions", allUsersSessions);
       />
 
       {/* Settings Modal */}
-      {showSettingsPopup && <SettingsPopup onClose={() => setShowSettingsPopup(false)} />}
+      {showSettingsPopup && (
+        <SettingsPopup onClose={() => setShowSettingsPopup(false)} />
+      )}
     </>
   );
 };

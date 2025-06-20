@@ -14,7 +14,6 @@ const LoginPopup = ({ open, onClose }) => {
     try {
       const credentials = { email, password };
       const response = await signin(credentials);
-      console.log('Login response:', response);
       const user = {
         accessToken: response.accessToken,
         refreshToken: response.refreshToken,
@@ -25,7 +24,6 @@ const LoginPopup = ({ open, onClose }) => {
         email: response.user.email,
         token: response.token,
       };
-      console.log('New user:', user);
 
       addUserAccount(user); // ✅ Add to account list
 
