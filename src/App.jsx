@@ -17,14 +17,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react';
 
 const App = () => {
-  useEffect(() => {
-    if (window.location.pathname === '/') {
-      localStorage.getItem('sb-pbpfolqijszsnvtydalm-auth-token')
-        ? (window.location.pathname = '/dashboard/home')
-        : (window.location.pathname = '/login');
-    }
-  }
-  , []);
+//   useEffect(() => {
+//     if (window.location.pathname === '/*') {
+//       localStorage.getItem('sb-pbpfolqijszsnvtydalm-auth-token')
+//         && (window.location.pathname = '/dashboard/home')
+        
+//       }
+//   }
+//   , []);
 
   return (
     <>
