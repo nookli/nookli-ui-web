@@ -23,6 +23,7 @@ const Login = () => {
 
   useEffect(() => {
     if (currentUser) {
+      console.log('Current user already logged in:', currentUser);
       navigate('/dashboard/home'); // or your home route
       return;
     }
@@ -70,53 +71,119 @@ const Login = () => {
     }
   };
 
+  // const handleGoogleLogin = async () => {
+  //   // 1. Initiate Google OAuth login
+  //   const { data, error } = await supabase.auth.signInWithOAuth({
+  //     provider: 'google',
+  //   });
+
+  //   if (error) {
+  //     console.error('Google login error:', error);
+  //     return;
+  //   }
+
+  //   console.log('Google login initiated:', data);
+
+  //   // 2. After redirect, parse tokens from URL
+  //   const hashParams = new URLSearchParams(window.location.hash.substring(1));
+  //   const accessToken = hashParams.get('access_token');
+  //   const refreshToken = hashParams.get('refresh_token');
+  //   const tokenExpiry = Number(hashParams.get('expires_at'));
+
+  //   if (!accessToken) return;
+
+  //   // 3. Decode JWT to extract user info
+  //   const decoded = jwtDecode(accessToken);
+
+  //   const email = decoded.email || '';
+  //   const fullName = decoded.user_metadata?.full_name || decoded.name || '';
+  //   const [firstname, ...rest] = fullName.split(' ');
+  //   const lastName = rest.join(' ');
+  //   const username = email.split('@')[0];
+  //   const img = decoded.user_metadata?.avatar_url || decoded.picture || '';
+  //   const id = decoded.sub;
+
+  //   // 4. Construct user object
+  //   const user = {
+  //     id,
+  //     email,
+  //     firstname,
+  //     lastname: lastName,
+  //     username,
+  //     img,
+  //     accessToken,
+  //     refreshToken,
+  //     tokenExpiry,
+  //   };
+
+  //   // 5. Store user in both stores
+  //   useCurrentUserStore.getState().loginCurrentUser(user);
+  //   useUserAccountsStore.getState().addUserAccount(user);
+  // };
+
+
   const handleGoogleLogin = async () => {
-    // 1. Initiate Google OAuth login
-    const { data, error } = await supabase.auth.signInWithOAuth({
+  try {
+    // Step 1: Start login — will redirect
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
     });
 
     if (error) {
+      toast.error('Google login failed');
       console.error('Google login error:', error);
-      return;
     }
 
-    // 2. After redirect, parse tokens from URL
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const accessToken = hashParams.get('access_token');
-    const refreshToken = hashParams.get('refresh_token');
-    const tokenExpiry = Number(hashParams.get('expires_at'));
+    // 🔥 Note: After this call, user will be redirected.
+    // So any code below here won't run during this session.
+  } catch (err) {
+    toast.error('Unexpected login error');
+    console.error(err);
+  }
+};
 
-    if (!accessToken) return;
+  useEffect(() => {
+  const finalizeGoogleLogin = async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
-    // 3. Decode JWT to extract user info
-    const decoded = jwtDecode(accessToken);
+    if (!session) return;
 
-    const email = decoded.email || '';
-    const fullName = decoded.user_metadata?.full_name || decoded.name || '';
+    const { access_token, refresh_token, user } = session;
+
+    const email = user.email || '';
+    const fullName = user.user_metadata?.full_name || '';
     const [firstname, ...rest] = fullName.split(' ');
     const lastName = rest.join(' ');
     const username = email.split('@')[0];
-    const img = decoded.user_metadata?.avatar_url || decoded.picture || '';
-    const id = decoded.sub;
+    const img = user.user_metadata?.avatar_url || '';
+    const id = user.id;
 
-    // 4. Construct user object
-    const user = {
+    const tokenExpiry = Math.floor(Date.now() / 1000) + session.expires_in;
+
+    const finalUser = {
       id,
       email,
       firstname,
       lastname: lastName,
       username,
       img,
-      accessToken,
-      refreshToken,
+      accessToken: access_token,
+      refreshToken: refresh_token,
       tokenExpiry,
     };
 
-    // 5. Store user in both stores
-    useCurrentUserStore.getState().loginCurrentUser(user);
-    useUserAccountsStore.getState().addUserAccount(user);
+    useCurrentUserStore.getState().loginCurrentUser(finalUser);
+    useUserAccountsStore.getState().addUserAccount(finalUser);
+
+    toast.success('Logged in with Google!');
+    navigate('/dashboard');
   };
+
+  finalizeGoogleLogin();
+}, []);
+
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50 px-4">
