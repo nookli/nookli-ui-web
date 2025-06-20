@@ -1,33 +1,36 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
-import sideImg from "../assets/sideImg.png";
-import supabase  from "../config/supabase";
-import { toast } from "react-toastify";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
+import sideImg from '../assets/sideImg.png';
+import supabase from '../config/supabase';
+import { toast } from 'react-toastify';
+import AuthSync  from '../utils/AuthSync';
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
 
- const handleJoinWaitlist = async () => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  AuthSync
 
-  if (!email.trim() || !emailRegex.test(email)) {
-    toast.error("Please enter a valid email address.");
-    return;
-  }
+  const handleJoinWaitlist = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  try {
-    const { error } = await supabase.from("waitlist").insert([{ email }]);
-    if (error) throw error;
-    toast.success("You've been added to the waitlist!");
-    setEmail("");
-  } catch (err) {
-    toast.error("Something went wrong. Try again.");
-    console.error("Waitlist error:", err);
-  }
-};
+    if (!email.trim() || !emailRegex.test(email)) {
+      toast.error('Please enter a valid email address.');
+      return;
+    }
+
+    try {
+      const { error } = await supabase.from('waitlist').insert([{ email }]);
+      if (error) throw error;
+      toast.success("You've been added to the waitlist!");
+      setEmail('');
+    } catch (err) {
+      toast.error('Something went wrong. Try again.');
+      console.error('Waitlist error:', err);
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -36,17 +39,18 @@ const LandingPage = () => {
       <main className="flex-1 bg-white">
         <div className="w-full bg-white px-6 md:px-12 py-16">
           <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-12">
-
             {/* Text Content */}
             <div className="w-full md:w-1/2">
               <h1 className="text-3xl md:text-4xl font-semibold mb-4">
                 Nookli is your Knowledge Operating System —
               </h1>
               <p className="text-gray-700 mb-4">
-                A modular platform to capture thinking, structure learning, and scale insight across people, projects, and time.
+                A modular platform to capture thinking, structure learning, and
+                scale insight across people, projects, and time.
               </p>
               <p className="text-gray-700 mb-4">
-                No more lost docs, siloed notes, or fragmented workflows. Just focused progress.
+                No more lost docs, siloed notes, or fragmented workflows. Just
+                focused progress.
               </p>
               <div className="flex flex-col sm:flex-row items-center gap-4 mt-6">
                 <input

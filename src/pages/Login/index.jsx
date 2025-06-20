@@ -27,15 +27,8 @@ const Login = () => {
       navigate('/dashboard/home'); // or your home route
       return;
     }
-
-    const now = new Date();
-
-    const validUsers = users.filter((user) => {
-      const expiry = new Date(user.tokenExpiry);
-      return expiry > now && user.accessToken; // session still valid
-    });
-
-    setActiveSessions(validUsers);
+    
+    setActiveSessions(users);
   }, [currentUser, users, navigate]);
 
   const handleSignIn = async (e) => {
@@ -71,62 +64,13 @@ const Login = () => {
     }
   };
 
-  // const handleGoogleLogin = async () => {
-  //   // 1. Initiate Google OAuth login
-  //   const { data, error } = await supabase.auth.signInWithOAuth({
-  //     provider: 'google',
-  //   });
-
-  //   if (error) {
-  //     console.error('Google login error:', error);
-  //     return;
-  //   }
-
-  //   console.log('Google login initiated:', data);
-
-  //   // 2. After redirect, parse tokens from URL
-  //   const hashParams = new URLSearchParams(window.location.hash.substring(1));
-  //   const accessToken = hashParams.get('access_token');
-  //   const refreshToken = hashParams.get('refresh_token');
-  //   const tokenExpiry = Number(hashParams.get('expires_at'));
-
-  //   if (!accessToken) return;
-
-  //   // 3. Decode JWT to extract user info
-  //   const decoded = jwtDecode(accessToken);
-
-  //   const email = decoded.email || '';
-  //   const fullName = decoded.user_metadata?.full_name || decoded.name || '';
-  //   const [firstname, ...rest] = fullName.split(' ');
-  //   const lastName = rest.join(' ');
-  //   const username = email.split('@')[0];
-  //   const img = decoded.user_metadata?.avatar_url || decoded.picture || '';
-  //   const id = decoded.sub;
-
-  //   // 4. Construct user object
-  //   const user = {
-  //     id,
-  //     email,
-  //     firstname,
-  //     lastname: lastName,
-  //     username,
-  //     img,
-  //     accessToken,
-  //     refreshToken,
-  //     tokenExpiry,
-  //   };
-
-  //   // 5. Store user in both stores
-  //   useCurrentUserStore.getState().loginCurrentUser(user);
-  //   useUserAccountsStore.getState().addUserAccount(user);
-  // };
-
-
   const handleGoogleLogin = async () => {
   try {
-    // Step 1: Start login — will redirect
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
+      options: {
+        redirectTo: window.location.origin + '/dashboard/home', 
+      },
     });
 
     if (error) {
