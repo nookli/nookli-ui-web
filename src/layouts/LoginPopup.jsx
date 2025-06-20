@@ -2,22 +2,40 @@ import React, { useState } from 'react';
 import { Dialog } from '@mui/material';
 import { toast } from 'react-toastify';
 import { signin } from '../api/auth';
-import { useUserStore } from '../redux/useUserStore';
+import { useUserAccountsStore } from '../redux/useUserAccountsStore';
+import { useCurrentUserStore } from '../redux/useCurrentUserStore';
 
 const LoginPopup = ({ open, onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const addUserAccount = useUserAccountsStore((state) => state.addUserAccount);
 
   const handleLogin = async () => {
     try {
       const credentials = { email, password };
       const response = await signin(credentials);
-      const { accessToken, refreshToken, user } = response;
+      console.log('Login response:', response);
+      const user = {
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+        id: response.user.id,
+        firstName: response.user.firstName,
+        lastName: response.user.lastName,
+        username: response.user.username,
+        email: response.user.email,
+        token: response.token,
+      };
+      console.log('New user:', user);
 
-      useUserStore.getState().login({ user, accessToken, refreshToken });
-      toast.success('Logged in as ' + user.email);
+      addUserAccount(user); // ✅ Add to account list
+
+      // ✅ Also set as current user
+      useCurrentUserStore.getState().loginCurrentUser(user);
+
+      toast.success('User Added Successfully');
       onClose();
     } catch (error) {
+      console.log(error);
       toast.error(error?.response?.data?.message || 'Login failed');
     }
   };
@@ -36,11 +54,16 @@ const LoginPopup = ({ open, onClose }) => {
       }}
     >
       <div className="p-6 space-y-5 bg-white dark:bg-zinc-900">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Login to another account</h2>
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+          Login to another account
+        </h2>
 
         <div className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1"
+            >
               Email
             </label>
             <input
@@ -53,7 +76,10 @@ const LoginPopup = ({ open, onClose }) => {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1"
+            >
               Password
             </label>
             <input

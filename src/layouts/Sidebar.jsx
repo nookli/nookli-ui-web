@@ -15,7 +15,8 @@ import { BsDiagram3 } from "react-icons/bs";
 import SettingsPopup from './SettingsPopup';
 import NewPopover from './NewPopover';
 import SwitchAccountPopover from './SwitchAccountPopover';
-import { useUserStore } from '../redux/useUserStore';
+import { useCurrentUserStore } from '../redux/useCurrentUserStore';
+import { useUserAccountsStore } from '../redux/useUserAccountsStore';
 
 
 const navItems = [
@@ -31,13 +32,17 @@ const Sidebar = ({ isRightSidebarOpen, setIsRightSidebarOpen }) => {
   const [showSettingsPopup, setShowSettingsPopup] = useState(false);
   const [newAnchorEl, setNewAnchorEl] = useState(null);
 
-  const { user, fetchUser } = useUserStore();
+  const currentUser = useCurrentUserStore((state) => state.currentUser);
+  const allUsersSessions = useUserAccountsStore((state) => state.users);
+console.log("allUsersSessions", allUsersSessions);
+ useEffect(() => {
+    if (currentUser) {
+      return;
+    } else navigate('/login');
 
-  useEffect(() => {
-    if (!user) fetchUser();
-  }, [user, fetchUser]);
+  }, [currentUser]);
 
-  const avatar = user?.avatar || 'https://i.pravatar.cc/49';
+  const avatar = currentUser?.avatar || 'https://i.pravatar.cc/49';
 
   const handleNewClick = (event) => {
     setNewAnchorEl(event.currentTarget);
@@ -147,18 +152,18 @@ const Sidebar = ({ isRightSidebarOpen, setIsRightSidebarOpen }) => {
         open={switchOpen}
         anchorEl={switchAnchorEl}
         onClose={handleSwitchClose}
-        accounts={[
-          {
-            avatar: 'https://i.pravatar.cc/42',
-            label: 'Personal',
-            email: 'neo@nookli.ai',
-          },
-          {
-            avatar: 'https://i.pravatar.cc/31',
-            label: 'Company',
-            email: 'neo@nookli.io',
-          },
-        ]}
+        // accounts={[
+        //   {
+        //     avatar: 'https://i.pravatar.cc/42',
+        //     label: 'Personal',
+        //     email: 'neo@nookli.ai',
+        //   },
+        //   {
+        //     avatar: 'https://i.pravatar.cc/31',
+        //     label: 'Company',
+        //     email: 'neo@nookli.ai',
+        //   },
+        // ]}
       />
 
       {/* Settings Modal */}

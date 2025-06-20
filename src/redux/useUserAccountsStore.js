@@ -17,6 +17,11 @@ export const useUserAccountsStore = create(
       removeUserAccount: (email) => {
         const filtered = get().users.filter((u) => u.email !== email);
         set({ users: filtered });
+
+        // If the removed user is the current user, clear the current user state
+        if (useCurrentUserStore.getState().currentUser?.email === email) {
+          useCurrentUserStore.getState().logoutCurrentUser();
+        }
       },
 
       switchAccount: (email) => {
