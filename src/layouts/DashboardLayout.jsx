@@ -5,45 +5,43 @@ import Topbar from './Topbar';
 import SearchPopup from './SearchPopup';
 import Dialog from '@mui/material/Dialog';
 import { IoClose } from 'react-icons/io5';
+import SubSidebar from './SubSidebar';
 
 const DashboardLayout = () => {
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(true);
   const [searchPopup, setsearchPopup] = useState(false);
-  const handleSearchClose = () => {
-    setsearchPopup(false);
-  };
+
+  const handleSearchClose = () => setsearchPopup(false);
 
   return (
-    <div className="flex h-screen">
-      {/* Primary Sidebar */}
-      <Sidebar isRightSidebarOpen={isRightSidebarOpen} setIsRightSidebarOpen={setIsRightSidebarOpen} />
+    <div className="flex h-screen overflow-hidden">
+      {/* Primary Sidebar (left) */}
+      <Sidebar
+        isRightSidebarOpen={isRightSidebarOpen}
+        setIsRightSidebarOpen={setIsRightSidebarOpen}
+      />
 
-      {/* Main Area (Topbar + Content + Right Sidebar) */}
-      <div className="flex flex-col flex-1">
+      {/* Main Content Area */}
+      <div className="flex flex-col flex-1 h-full overflow-hidden">
         {/* Topbar */}
         <Topbar setsearchPopup={setsearchPopup} />
 
-        <div className="flex h-full">
-          {/* Main Content Area */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* SubSidebar (right sidebar) */}
+          <SubSidebar isOpen={isRightSidebarOpen} />
+
+          {/* Main Outlet View */}
           <div
-            className={`relative transition-all duration-300 bg-gray-200 ${isRightSidebarOpen ? 'w-[270px]' : 'w-0'
-              } overflow-hidden`}
+            className={`transition-all duration-300 overflow-y-auto p-6 bg-white w-full ${
+              isRightSidebarOpen ? 'w-[calc(100%-270px)]' : 'w-full'
+            }`}
           >
-
-
-            {/* Content inside Sidebar */}
-            <div className="p-4">
-              <p className="font-semibold">Sidebar</p>
-              <p className="text-sm text-gray-700 mt-2">Add your widgets/info here.</p>
-            </div>
-          </div>
-          <div className={`transition-all duration-300 ${isRightSidebarOpen ? 'w-[calc(100%-270px)]' : 'w-full'} p-6 bg-white overflow-y-auto`}>
             <Outlet />
           </div>
-
-          {/* Right Sidebar */}
         </div>
       </div>
+
+      {/* Search Dialog */}
       <Dialog
         open={searchPopup}
         onClose={handleSearchClose}
@@ -58,11 +56,13 @@ const DashboardLayout = () => {
             px: 3,
             py: 2,
             position: 'relative',
-          }
+          },
         }}
       >
-
-        <button onClick={() => setsearchPopup(false)} className="absolute top-2 right-3 text-gray-600 hover:text-black">
+        <button
+          onClick={handleSearchClose}
+          className="absolute top-2 right-3 text-gray-600 hover:text-black"
+        >
           <IoClose size={20} />
         </button>
         <SearchPopup />

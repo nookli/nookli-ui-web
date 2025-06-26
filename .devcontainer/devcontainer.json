@@ -2,7 +2,7 @@
   "image": "mcr.microsoft.com/devcontainers/javascript-node:20", 
   "hostRequirements": {
     "cpus": 2,
-    "memory": "4gb"
+    "memory": "8gb"
   },
   "waitFor": "onCreateCommand",
   "updateContentCommand": "npm install",

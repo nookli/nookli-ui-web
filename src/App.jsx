@@ -15,16 +15,17 @@ import RegisterWithProvider from './pages/Register';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react';
+import SpaceDetail from './pages/dashboard/SpaceDetail';
 
 const App = () => {
-//   useEffect(() => {
-//     if (window.location.pathname === '/*') {
-//       localStorage.getItem('sb-pbpfolqijszsnvtydalm-auth-token')
-//         && (window.location.pathname = '/dashboard/home')
-        
-//       }
-//   }
-//   , []);
+  //   useEffect(() => {
+  //     if (window.location.pathname === '/*') {
+  //       localStorage.getItem('sb-pbpfolqijszsnvtydalm-auth-token')
+  //         && (window.location.pathname = '/dashboard/home')
+
+  //       }
+  //   }
+  //   , []);
 
   return (
     <>
@@ -46,6 +47,7 @@ const App = () => {
         >
           <Route path="home" element={<DashboardHome />} />
           <Route path="workspaces" element={<Workspaces />} />
+          <Route path="flows/:spaceId" element={<SpaceDetail />} />
           <Route path="stacks" element={<Stacks />} />
           <Route path="flows" element={<Flows />} />
           <Route path="search" element={<Search />} />

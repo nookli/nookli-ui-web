@@ -8,9 +8,7 @@ export const useUserAccountsStore = create(
       users: [],
 
       addUserAccount: (newUser) => {
-        const existing = get().users.filter(
-          (u) => u.email !== newUser.email
-        );
+        const existing = get().users.filter((u) => u.email !== newUser.email);
         set({ users: [...existing, newUser] });
       },
 
@@ -18,7 +16,6 @@ export const useUserAccountsStore = create(
         const filtered = get().users.filter((u) => u.email !== email);
         set({ users: filtered });
 
-        // If the removed user is the current user, clear the current user state
         if (useCurrentUserStore.getState().currentUser?.email === email) {
           useCurrentUserStore.getState().logoutCurrentUser();
         }
@@ -30,6 +27,14 @@ export const useUserAccountsStore = create(
           useCurrentUserStore.getState().loginCurrentUser(user);
         }
       },
+
+      updateUserAccessToken: (email, accessToken, refreshToken) => {
+        const updatedUsers = get().users.map((u) =>
+          u.email === email ? { ...u, accessToken, refreshToken } : u
+        );
+        set({ users: updatedUsers });
+      },
+
     }),
     {
       name: 'user-accounts-store',

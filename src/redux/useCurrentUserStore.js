@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export const useCurrentUserStore = create(
   persist(
-    (set) => ({
+    (set, get) => ({
       currentUser: null,
 
       loginCurrentUser: (user) => set({ currentUser: user }),
@@ -17,6 +17,19 @@ export const useCurrentUserStore = create(
           refreshToken: currentUser?.refreshToken || null,
           tokenExpiry: currentUser?.tokenExpiry || null,
         };
+      },
+
+      updateAccessToken: (accessToken, refreshToken) => {
+        const { currentUser } = get();
+        if (currentUser) {
+          set({
+            currentUser: {
+              ...currentUser,
+              accessToken,
+              refreshToken,
+            },
+          });
+        }
       },
     }),
     {

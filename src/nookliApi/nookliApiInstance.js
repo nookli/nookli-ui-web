@@ -2,15 +2,15 @@ import axios from "axios";
 import { useCurrentUserStore } from "../redux/useCurrentUserStore";
 import { useUserAccountsStore } from "../redux/useUserAccountsStore";
 
-const API = axios.create({
-  baseURL: "https://api.nookli.ai/api/v1",
+const nookliAPI = axios.create({
+  baseURL: "https://nookli-fastapi-603706786782.us-central1.run.app/",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 // 🟢 Request Interceptor – Just attach token, no refresh here
-API.interceptors.request.use(
+nookliAPI.interceptors.request.use(
   (config) => {
     const session = useCurrentUserStore.getState().getCurrentSession();
     if (session?.accessToken) {
@@ -22,7 +22,7 @@ API.interceptors.request.use(
 );
 
 // 🔁 Response Interceptor – Only refresh on 401 (Invalid/Expired Token)
-API.interceptors.response.use(
+nookliAPI.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
@@ -81,4 +81,4 @@ API.interceptors.response.use(
   }
 );
 
-export default API;
+export default nookliAPI;
