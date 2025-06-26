@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LinkedSpaces = () => {
+const LinkedSpacesTab = () => {
     return (
         <div>
             <h1>Linked Spaces Page</h1>
@@ -8,4 +8,4 @@ const LinkedSpaces = () => {
         </div>
     )
 }
-export default LinkedSpaces;
+export default LinkedSpacesTab;

@@ -26,17 +26,17 @@ import { useUserAccountsStore } from '../redux/useUserAccountsStore';
 
 const navItems = [
   { to: '/dashboard/home', label: 'Home', icon: <Home fontSize="small" /> },
-  {
-    to: '/dashboard/workspaces',
-    label: 'Spaces',
-    icon: <Workspaces fontSize="small" />,
-  },
-  {
-    to: '/dashboard/stacks',
-    label: 'Stacks',
-    icon: <Storage fontSize="small" />,
-  },
-  { to: '/dashboard/flows', label: 'Flows', icon: <Hub fontSize="small" /> },
+  // {
+  //   to: '/dashboard/workspaces',
+  //   label: 'Spaces',
+  //   icon: <Workspaces fontSize="small" />,
+  // },
+  // {
+  //   to: '/dashboard/stacks',
+  //   label: 'Stacks',
+  //   icon: <Storage fontSize="small" />,
+  // },
+  { to: '/dashboard/spaces', label: 'spaces', icon: <Hub fontSize="small" /> },
   {
     to: '/dashboard/search',
     label: 'Search',

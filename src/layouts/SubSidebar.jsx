@@ -73,7 +73,7 @@ const Sidebar = ({ isOpen }) => {
                     const isActive = location.pathname.includes(space.space_id);
 
                     return (
-                      <Link key={space.space_id} to={`/dashboard/flows/${space.space_id}`} className="block">
+                      <Link key={space.space_id} to={`/dashboard/spaces/${space.space_id}`} className="block">
                         <ListItem
                           button
                           className={clsx(

@@ -1,0 +1,84 @@
+.
+├── api
+│   ├── auth.js
+│   └── axiosInstance.js
+├── App.css
+├── App.jsx
+├── App.test.jsx
+├── assets
+│   ├── logo.png
+│   └── sideImg.png
+├── components
+│   ├── Footer.jsx
+│   ├── handlePostOAuthLogin.js
+│   ├── Navbar.jsx
+│   ├── ProtectedRoute.jsx
+│   ├── TabCreateModal.jsx
+│   ├── WorkspaceContent.jsx
+│   └── WorkspaceTabs.jsx
+├── config
+│   └── supabase.js
+├── contexts
+│   └── AuthContext.jsx
+├── index.css
+├── index.jsx
+├── layouts
+│   ├── AIChatPanel.jsx
+│   ├── DashboardLayout.jsx
+│   ├── HistoryPopover.jsx
+│   ├── LoginPopup.jsx
+│   ├── NewPopover.jsx
+│   ├── NotificationsPopover.jsx
+│   ├── SearchPopup.jsx
+│   ├── SettingsPopup.jsx
+│   ├── Sidebar.jsx
+│   ├── SubSidebar.jsx
+│   ├── SwitchAccountPopover.jsx
+│   └── Topbar.jsx
+├── logo.svg
+├── modal
+│   ├── AddSpaceModal.jsx
+│   └── EditSpaceModal.jsx
+├── nookliApi
+│   ├── nookliApiInstance.js
+│   ├── spacesApi.js
+│   └── stacksApi.js
+├── pages
+│   ├── dashboard
+│   │   ├── Flows.jsx
+│   │   ├── Home.jsx
+│   │   ├── Search.jsx
+│   │   ├── SpaceDetail
+│   │   │   ├── Flows.jsx
+│   │   │   ├── index.jsx
+│   │   │   ├── LinkedSpaces.jsx
+│   │   │   ├── Overview.jsx
+│   │   │   ├── Settings.jsx
+│   │   │   ├── Stacks.jsx
+│   │   │   └── Trash.jsx
+│   │   ├── StackDetail
+│   │   │   └── index.jsx
+│   │   ├── Stacks.jsx
+│   │   └── Workspaces.jsx
+│   ├── LandingPage.jsx
+│   ├── Login
+│   │   ├── ForgotPasswordModal.jsx
+│   │   └── index.jsx
+│   ├── NotFound.jsx
+│   └── Register
+│       └── index.jsx
+├── redux
+│   ├── tabStore.js
+│   ├── useCurrentUserStore.js
+│   ├── useSpacesStore.js
+│   ├── useUserAccountsStore.js
+│   └── useUserStore.js
+├── reportWebVitals.js
+├── routes
+│   └── ProtectedRoute.jsx
+├── setupTests.js
+├── structure.txt
+└── utils
+    └── AuthSync.js
+
+18 directories, 64 files

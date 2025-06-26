@@ -155,7 +155,7 @@ const Flows = () => {
               Members: {space.members?.join(', ') || 'No members'}
             </p>
             <Link
-              to={`/dashboard/flows/${space.space_id}`}
+              to={`/dashboard/spaces/${space.space_id}`}
               className="mt-2 text-sm text-blue-500 underline block"
             >
               Open Space

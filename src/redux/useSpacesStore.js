@@ -82,14 +82,6 @@ const useSpacesStore = create(persist(
         },
         setActiveSpace: (id) => set({ activeSpaceId: id }),
 
-        setActiveTabForSpace: (spaceId, tab) =>
-            set((state) => ({
-                spaceTabs: {
-                    ...state.spaceTabs,
-                    [spaceId]: tab,
-                },
-            })),
-
         addSpace: (space) =>
             set((state) => ({
                 spaces: [...state.spaces, space],
