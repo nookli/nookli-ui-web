@@ -123,8 +123,7 @@ const StacksTab = () => {
                                 >
                                     <FaEdit fontSize="small" />
                                 </IconButton>
-                                <Link
-                                    to={`/dashboard/spaces/${spaceId}/stacks/${stack.id}`}
+                                <Link to={`/dashboard/spaces/${spaceId}/stacks/${stack.id}`}
                                     className="mt-2 text-sm text-blue-500 underline block"
                                 >
                                     Open Space

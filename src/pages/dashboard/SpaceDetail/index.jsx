@@ -78,7 +78,7 @@
 // };
 
 // export default index;
-import { Outlet, useParams, useNavigate, NavLink } from 'react-router-dom';
+import { useParams, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getSpaceById } from '../../../nookliApi/spacesApi';
 import useSpacesStore from '../../../redux/useSpacesStore';
@@ -90,8 +90,9 @@ const SpaceDetail = () => {
   const { spaceId } = useParams();
   const [space, setSpace] = useState(null);
   const { setActiveSpace } = useSpacesStore();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation();
+  const { setTabForSpace, getTabForSpace } = useSpacesStore();
 
   useEffect(() => {
     const fetchSpace = async () => {
@@ -107,15 +108,19 @@ const SpaceDetail = () => {
     fetchSpace();
   }, [spaceId]);
 
-    useEffect(() => {
+  useEffect(() => {
     const savedTab = getTabForSpace(spaceId);
-    const currentPath = location.pathname.split('/').pop();
-    
-    // If user is just on /spaces/:spaceId without tab, redirect
-    if (spaceId && !tabs.includes(currentPath)) {
+    const currentPathSegments = location.pathname.split('/');
+
+    // get only the part after /spaces/:spaceId/
+    const tabOrSubPath = currentPathSegments[4];
+
+    // Prevent redirection on nested pages like stacks/:stackId
+    if (spaceId && !tabs.includes(tabOrSubPath)) {
       navigate(`/dashboard/spaces/${spaceId}/${savedTab || 'overview'}`, { replace: true });
     }
   }, [spaceId, location.pathname]);
+
 
   const handleTabClick = (tab) => {
     setTabForSpace(spaceId, tab);

@@ -91,6 +91,7 @@ import SettingsTab from './pages/dashboard/SpaceDetail/SettingsTab';
 import StacksTab from './pages/dashboard/SpaceDetail/StacksTab';
 import OverviewTab from './pages/dashboard/SpaceDetail/OverviewTab';
 import StackDetailTab from './pages/dashboard/StackDetailTab';
+import SpaceRedirector from './SpaceRedirector';
 
 const App = () => {
   return (
@@ -121,7 +122,8 @@ const App = () => {
 
           {/* Space detail with nested tab routes */}
           <Route path="spaces/:spaceId" element={<SpaceDetail />}>
-            <Route index element={<Navigate to="overview" replace />} />
+          <Route index element={<SpaceRedirector />} />
+            {/* <Route index element={<Navigate to="overview" replace />} /> */}
             <Route path="overview" element={<OverviewTab />} />
             <Route path="flows" element={<FlowsTab />} />
             <Route path="stacks" element={<StacksTab />} />
