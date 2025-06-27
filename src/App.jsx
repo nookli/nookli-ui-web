@@ -92,6 +92,7 @@ import StacksTab from './pages/dashboard/SpaceDetail/StacksTab';
 import OverviewTab from './pages/dashboard/SpaceDetail/OverviewTab';
 import StackDetailTab from './pages/dashboard/StackDetailTab';
 import SpaceRedirector from './SpaceRedirector';
+import PathDetail from './pages/dashboard/PathDetail';
 
 const App = () => {
   return (
@@ -122,12 +123,19 @@ const App = () => {
 
           {/* Space detail with nested tab routes */}
           <Route path="spaces/:spaceId" element={<SpaceDetail />}>
-          <Route index element={<SpaceRedirector />} />
+            <Route index element={<SpaceRedirector />} />
             {/* <Route index element={<Navigate to="overview" replace />} /> */}
             <Route path="overview" element={<OverviewTab />} />
             <Route path="flows" element={<FlowsTab />} />
             <Route path="stacks" element={<StacksTab />} />
-            <Route path="stacks/:stackId" element={<StackDetailTab />} />
+            {/* <Route path="stacks/:stackId" element={<StackDetailTab />} /> */}
+
+            <Route path="stacks/:stackId">
+              <Route index element={<StackDetailTab />} />
+              <Route path="paths/:pathId" element={<PathDetail />} />
+            </Route>
+
+
             <Route path="settings" element={<SettingsTab />} />
             <Route path="trash" element={<TrashTab />} />
             <Route path="linked-spaces" element={<LinkedSpacesTab />} />
